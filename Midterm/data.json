@@ -20,5 +20,124 @@
             "description": "BC is a Sophomore in Computer Science at Iowa State.",
             "image": "./images/avatar.jpg"
         }
-    ]
+    ],
+    "weatherHeader": {
+        "image": "./images/weather.webp",
+        "title": "Search Local Weather Conditions",
+        "description": "Get ready for your day by checking local weather conditions! Input any city into the text-box below and local weather data for the area will be displayed. Dress accordingly!"
+    },
+    "weatherCodes": {
+        "0": {
+            "name": "Clear Sky",
+            "image": "./images/clear_sky.jpeg"
+        },
+        "1": {
+            "name": "Few Clouds",
+            "image": "./images/few_clouds.jpeg"
+        },
+        "2": {
+            "name": "Scattered Clouds",
+            "image": "./images/scattered_clouds.webp"
+        },
+        "3": {
+            "name": "Broken Clouds",
+            "image": "./images/broken_clouds.webp"
+        },
+        "45": {
+            "name": "Fog",
+            "image": "./images/fog.webp"
+        },
+        "48": {
+            "name": "Depositing Rime Fog",
+            "image": "./images/fog.webp"
+        },
+        "51": {
+            "name": "Drizzle",
+            "image": "./images/light_rain.webp"
+        },
+        "53": {
+            "name": "Moderate Rain",
+            "image": "./images/light_rain.webp"
+        },
+        "55": {
+            "name": "Heavy Rain",
+            "image": "./images/heavy_rain.jpeg"
+        },
+        "56": {
+            "name": "Light Rain Shower",
+            "image": "./images/light_rain.webp"
+        },
+        "57": {
+            "name": "Heavy Rain Shower",
+            "image": "./images/heavy_rain.jpeg"
+        },
+        "61": {
+            "name": "Showers",
+            "image": "./images/light_rain.webp"
+        },
+        "63": {
+            "name": "Heavy Showers",
+            "image": "./images/heavy_rain.jpeg"
+        },
+        "65": {
+            "name": "Rain",
+            "image": "./images/heavy_rain.jpeg"
+        },
+        "66": {
+            "name": "Freezing Rain",
+            "image": "./images/snowing.jpeg"
+        },
+        "67": {
+            "name": "Heavy Freezing Rain",
+            "image": "./images/snowing.jpeg"
+        },
+        "71": {
+            "name": "Snow",
+            "image": "./images/snowing.jpeg"
+        },
+        "73": {
+            "name": "Heavy Snow",
+            "image": "./images/snowing.jpeg"
+        },
+        "75": {
+            "name": "Snow Showers",
+            "image": "./images/snowing.jpeg"
+        },
+        "77": {
+            "name": "Snow Grains",
+            "image": "./images/snowing.jpeg"
+        },
+        "80": {
+            "name": "Rain Showers",
+            "image": "./images/heavy_rain.jpeg"
+        },
+        "81": {
+            "name": "Torrential Rain Showers",
+            "image": "./images/heavy_rain.jpeg"
+        },
+        "82": {
+            "name": "Heavy Rain Showers",
+            "image": "./images/heavy_rain.jpeg"
+        },
+        "85": {
+            "name": "Snow Showers",
+            "image": "./images/snowing.jpeg"
+        },
+        "86": {
+            "name": "Heavy Snow Showers",
+            "image": "./images/snowing.jpeg"
+        },
+        "95": {
+            "name": "Thunderstorm",
+            "image": "./images/thunderstorm.webp"
+        },
+        "96": {
+            "name": "Thunderstorm with Hail",
+            "image": "./images/hail.jpeg"
+        },
+        "99": {
+            "name": "Heavy Thunderstorm with Hail",
+            "image": "./images/hail.jpeg"
+        }
+    }
 }
