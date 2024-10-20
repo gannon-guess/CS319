@@ -26,6 +26,21 @@
         "title": "Search Local Weather Conditions",
         "description": "Get ready for your day by checking local weather conditions! Input any city into the text-box below and local weather data for the area will be displayed. Dress accordingly!"
     },
+    "stocksHeader": {
+        "image": "./images/stocks.jpeg",
+        "title": "Search Trade Information",
+        "description": "Keep up with the day-to-day of the Stock Market!"
+    },
+    "stocks":{
+        "down": {
+            "image": "./images/down.jpg",
+            "description": "It looks like this Stock is trending downward... It might be time to buy!"
+        },
+        "up": {
+            "image": "./images/up.jpg",
+            "description": "It looks like this stock is on an upward trend! It could be time to sell, for some."
+        }
+    },
     "weatherCodes": {
         "0": {
             "name": "Clear Sky",
