@@ -63,6 +63,9 @@ document.getElementById('stockForm').addEventListener('submit', async (event) =>
             if(ChangePercent < 0) {
                 img = jsonData.stocks.down.image
                 description = jsonData.stocks.down.description
+            } else if(ChangePercent == 0) {
+                img = jsonData.stocks.even.image
+                description = jsonData.stocks.even.description
             } else {
                 img = jsonData.stocks.up.image
                 description = jsonData.stocks.up.description
@@ -76,7 +79,7 @@ document.getElementById('stockForm').addEventListener('submit', async (event) =>
                         <p class="card-text">Change since close: ${ChangePercent}%</p>
                         <p class="card-text">Traded Today: ${Volume}</p>
                         <p>${description}</p>
-                        <img src="${img}" alt="trend img" style="max-width: 100%; height: auto;">
+                        <img src="${img}" alt="trend img" style="max-width: 80%; height: auto;">
                     </div>
                 </div>
             `;

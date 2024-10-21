@@ -5,7 +5,7 @@
         "course": "CS319 Construction of User Interfaces",
         "semester": "Fall 2024",
         "date": "October 20, 2024",
-        "description": "Welcome to the Developers' page! Learn a little more about the creators of these web pages and how to contact them below."
+        "description": "Welcome to the Developers' page! We wanted to create a webpage that would allow access to some important early-morning information to help you plan for your day."
     },
     "authors": [
         {
@@ -39,6 +39,10 @@
         "up": {
             "image": "./images/up.jpg",
             "description": "It looks like this stock is on an upward trend! It could be time to sell, for some."
+        },
+        "even": {
+            "image": "./images/noChange.png",
+            "description": "This Stock's value has not changed since last market close. Make sure to keep an eye on it, though!"
         }
     },
     "weatherCodes": {
