@@ -1,0 +1,41 @@
+/* Hide the number input spinners for Webkit browsers (Chrome, Safari) */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Hide the number input spinners for Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+input[type="number"] {
+    text-align: center; /* Center the text */
+    -moz-appearance: textfield; /* Remove spinner in Firefox */
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none; /* Remove spinner in WebKit browsers */
+    margin: 0;
+}
+
+
+
+.card-container .card {
+    margin: 10px; /* Add spacing between cards */
+    width: 15rem; /* Fixed width for cards */
+} 
+
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Adjust min-width as needed */
+    gap: 100px; /* Space between grid items */
+    justify-items: center; /* Center items within their grid cell */
+    margin: 0 auto; /* Center the container */
+}
+
+.form-group {
+    padding-bottom: "90px";
+}
