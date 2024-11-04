@@ -2,41 +2,59 @@ import React, { useState, useEffect } from "react";
 import { Container, Card, Button, InputGroup, Form, Row, Col } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import './styles.css';
-
-import NavBar from "./NavBar.js";
 import View from "./View.js";
+import imageMap from "./imageMap.js";
+
+// Gannon Guess
+// gannon@iastate.edu
+// Boudhayan Chakraborty
+// bcb43@iastate.edu
+// November 3, 2024
 
 const Shop = ({ catalog, setCatalog, filteredCatalog, setFilteredCatalog, cart, setCart, cartTotal, setCartTotal, viewer, setViewer }) => {
     const [searchTerm, setSearchTerm] = useState('');
+    
 
-    const howManyofThis = (id) => {
-        return cart.filter((cartItem) => cartItem.id === id).length;
-    };
+    function howManyofThis(id) {
+        let hmot = cart.filter((cartItem) => cartItem.id === id);
+        return hmot.length;
+    }
 
-    const onCheckout = () => {
-        setViewer(View.CART); // Switch view to Summary
-    };
+    const onCheckout = data => {
+        console.log(View.CART);
+        setViewer(View.CART); // switch view to Summary
+    }
 
-    useEffect(() => {
+    useEffect(()=>{
         const fetchData = async () => {
-            const response = await fetch("./products.json");
-            const data = await response.json();
+            const someResponse = await fetch("./products.json");
+            const data = await someResponse.json();
+            // update State Variable
             setCatalog(data);
             setFilteredCatalog(data);
+            console.log(data);
         };
         fetchData();
-    }, []);
+    },[]);
 
-    useEffect(() => {
-        const totalAmount = cart.reduce((acc, item) => acc + item.price, 0).toFixed(2);
-        setCartTotal(totalAmount);
-    }, [cart]);
+    useEffect(()=>{
+        const total = () => {
+            let totalAmount = 0;
+            for (let i=0; i<cart.length; i++){
+                totalAmount += cart[i].price;
+            }
+            totalAmount = totalAmount.toFixed(2);
+            setCartTotal(totalAmount);
+            console.log(totalAmount);
+        };
+        total();
+    },[cart]);
+
 
     const listItems = filteredCatalog.map((el) => (
         <Col md={4} key={el.id} className='mb-4'>
             <Card>
-                <Card.Img variant="top" src={el.image} alt="shop item" style={{ height: "300px", objectFit: 'contain' }} />
+                <Card.Img variant="top" src={imageMap[el.image]} alt="shop item" style={{ height: "300px", objectFit: 'contain' }} />
                 <Card.Body className="d-flex flex-column">
                     <Card.Title>{el.title}</Card.Title>
                     <Card.Text>💲{el.price.toFixed(2)}</Card.Text>
@@ -46,8 +64,8 @@ const Shop = ({ catalog, setCatalog, filteredCatalog, setFilteredCatalog, cart, 
                         <Form.Control
                             type="number"
                             value={howManyofThis(el.id)}
-                            onChange={(e) => updateQuantity(el.id, e.target.value)}
-                            className="mx-2"
+                            readOnly
+                            className="mx-2 text-center"
                             style={{ width: "60px" }}
                         />
                         <Button variant="outline-success" onClick={() => addToCart(el)}>+</Button>
@@ -61,41 +79,34 @@ const Shop = ({ catalog, setCatalog, filteredCatalog, setFilteredCatalog, cart, 
         setCart([...cart, el]);
     };
 
-    const removeFromCart = (el) => {
-        const updatedCart = cart.map((cartItem) => {
-            if (cartItem.id === el.id) {
-                if (cartItem.quantity > 1) {
-                    // Decrease quantity by 1
-                    return { ...cartItem, quantity: cartItem.quantity - 1 };
-                } else {
-                    // If quantity is 1, remove the item from the cart
-                    return null;
-                }
-            }
-            return cartItem;
-        }).filter(Boolean); // Remove null values
     
-        setCart(updatedCart);
+    const removeFromCart = (el) => {
+        let itemFound = false;
+        const updatedCart = cart.filter((cartItem) => {
+            if (cartItem.id === el.id && !itemFound) {
+                itemFound = true;
+                return false;
+            }
+            return true;
+        });
+        if (itemFound) {
+            setCart(updatedCart);
+        }
     };
 
     const updateQuantity = (id, quantity) => {
-        // Convert quantity to a number
         const qty = parseInt(quantity, 10);
     
         if (qty < 1) {
-            // If the quantity is less than 1, remove the item from the cart
             removeFromCart({ id });
         } else {
-            // Otherwise, update the quantity in the cart
             const updatedCart = cart.map((cartItem) => {
                 if (cartItem.id === id) {
-                    // Return a new object with the updated quantity
                     return { ...cartItem, quantity: qty };
                 }
                 return cartItem;
             });
     
-            // If the item was not found in the cart, add it with the specified quantity
             if (!updatedCart.find(item => item.id === id)) {
                 const newItem = { ...catalog.find(item => item.id === id), quantity: qty };
                 updatedCart.push(newItem);

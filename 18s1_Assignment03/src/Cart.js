@@ -1,11 +1,16 @@
 import { useForm } from "react-hook-form";
 import "bootstrap/dist/css/bootstrap.css";
-import { Container, Col, Button, Row, InputGroup } from 'react-bootstrap';
+import { Container, Col, Button, Row } from 'react-bootstrap';
 import View from "./View.js";
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import "./styles.css";
+import imageMap from "./imageMap.js";
 
-// Payment module used to display a form for user input of data
+// Gannon Guess
+// gannon@iastate.edu
+// Boudhayan Chakraborty
+// bcb43@iastate.edu
+// November 3, 2024
+
 function Cart({ cart, cartTotal, userInfo, setUserInfo, view, setViewer }) {
     const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -40,7 +45,7 @@ function Cart({ cart, cartTotal, userInfo, setUserInfo, view, setViewer }) {
         <Row className="mb-3" key={item.id}>
             <hr />
             <Col xs={3} className="text-center">
-                <img src={item.image} alt={item.title} style={{ width: '80px', height: 'auto' }} />
+                <img src={imageMap[item.image]} alt={item.title} style={{ width: '80px', height: 'auto' }} />
             </Col>
             <Col xs={5} className="d-flex align-items-center">
                 <div>{item.title}</div>
@@ -124,7 +129,7 @@ function Cart({ cart, cartTotal, userInfo, setUserInfo, view, setViewer }) {
                 </Row>
                 <div className="text-center">
                     <Button type="submit" variant="primary">
-                        Confirm
+                        Order
                         <i className="bi bi-bag-check" style={{ marginLeft: '8px' }}></i>
                     </Button>
                 </div>
@@ -133,5 +138,4 @@ function Cart({ cart, cartTotal, userInfo, setUserInfo, view, setViewer }) {
     );
 }
 
-// export the module
 export default Cart;

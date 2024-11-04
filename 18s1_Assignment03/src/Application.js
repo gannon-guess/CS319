@@ -4,6 +4,12 @@ import Shop from "./Browse.js";
 import Cart from "./Cart.js"
 import Summary from "./Summary.js"
 
+// Gannon Guess
+// gannon@iastate.edu
+// Boudhayan Chakraborty
+// bcb43@iastate.edu
+// November 3, 2024
+
 
 function App()
 {
@@ -11,12 +17,10 @@ function App()
     const [filteredCatalog, setFilteredCatalog] = useState([]);
     const [cart, setCart] = useState([]);
     const [cartTotal, setCartTotal] = useState(0);
-    // create variable for form data and its setter
     const [userInfo, setUserInfo] = useState({});
-    // create variable for viewer state and its setter
-    const [viewer, setViewer] = useState(View.BROWSE); // set viewer to Payment
 
-    // display page based on viewer
+    const [viewer, setViewer] = useState(View.BROWSE);
+
     return(
         <div>
             {viewer === View.BROWSE ? (
@@ -47,6 +51,7 @@ function App()
                     setUserInfo={setUserInfo}
                     cart={cart}
                     setCart={setCart}
+                    cartTotal={cartTotal}
                     setCartTotal={setCartTotal}
                     viewer={viewer}    
                     setViewer={setViewer}
@@ -58,5 +63,4 @@ function App()
     );
 }
 
-// export the module
 export default App;

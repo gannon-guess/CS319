@@ -1,9 +1,17 @@
 import React from 'react';
-import { Container, Card, Col, Button, Row } from 'react-bootstrap';
+import { Container, Col, Button, Row } from 'react-bootstrap';
 import View from "./View.js";
+import imageMap from "./imageMap.js";
 
-// Module used to display the user information entered into the Payment form
-function Summary({ userInfo, setUserInfo, cart, setCart, setCartTotal, viewer, setViewer }) {
+// Gannon Guess
+// gannon@iastate.edu
+// Boudhayan Chakraborty
+// bcb43@iastate.edu
+// November 3, 2024
+
+function Summary({ userInfo, setUserInfo, cart, setCart, cartTotal, setCartTotal, viewer, setViewer }) {
+    const tax = (parseFloat(cartTotal) * 0.075).toFixed(2);
+    const total = parseFloat(cartTotal) + parseFloat(tax);
     const onFinish = () => {
         setViewer(View.BROWSE);
         setUserInfo(userInfo);
@@ -14,9 +22,9 @@ function Summary({ userInfo, setUserInfo, cart, setCart, setCartTotal, viewer, s
     const aggregatedCart = cart.reduce((acc, item) => {
         const existingItem = acc.find(i => i.id === item.id);
         if (existingItem) {
-            existingItem.quantity += item.quantity; // Sum the quantities
+            existingItem.quantity += item.quantity; 
         } else {
-            acc.push({ ...item }); // Add new item
+            acc.push({ ...item });
         }
         return acc;
     }, []);
@@ -29,7 +37,7 @@ function Summary({ userInfo, setUserInfo, cart, setCart, setCartTotal, viewer, s
         <Row className="mb-3" key={item.id}>
             <hr />
             <Col xs={3} className="text-center">
-                <img src={item.image} alt={item.title} style={{ width: '80px', height: 'auto' }} />
+                <img src={imageMap[item.image]} alt={item.title} style={{ width: '80px', height: 'auto' }} />
             </Col>
             <Col xs={5} className="d-flex align-items-center">
                 <div>
@@ -47,9 +55,16 @@ function Summary({ userInfo, setUserInfo, cart, setCart, setCartTotal, viewer, s
     return (
         <Container className="my-4 p-4">
             <h1 className="mb-4 text-center">Payment Summary</h1>
+            <h3>Items Purchased:</h3>
             {listCart.length > 0 ? listCart : <p className="text-center">Your cart is empty.</p>}
-            <h2 className="mt-4">Made out to:</h2>
-            <h3>{userInfo.fullName}</h3>
+            <hr />
+            <Row className="font-weight-bold mb-2">
+                <Col xs={3}></Col>
+                <Col xs={5}>Total</Col>
+                <Col xs={4}>${cartTotal} + ${tax} Tax = ${total.toFixed(2)}</Col>
+            </Row>
+            <hr />
+            <h2 className="mt-4">Thank you for your order, {userInfo.fullName}!</h2>
             <p>{userInfo.email}</p>
             <p>{userInfo.creditCard}</p>
             <p>{userInfo.address}</p>
@@ -65,5 +80,4 @@ function Summary({ userInfo, setUserInfo, cart, setCart, setCartTotal, viewer, s
     );
 }
 
-// Export the module
 export default Summary;
