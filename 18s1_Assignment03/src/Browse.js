@@ -1,104 +1,81 @@
 import React, { useState, useEffect } from "react";
-import { Container, Card, Col, Button, InputGroup, Form } from 'react-bootstrap';
+import { Container, Card, Button, InputGroup, Form, Row, Col } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import './styles.css'
+import './styles.css';
 
 import NavBar from "./NavBar.js";
-import View from "./View.js"
+import View from "./View.js";
 
-const Shop = ( { catalog, setCatalog, filteredCatalog, setFilteredCatalog, cart, setCart, cartTotal, setCartTotal, viewer, setViewer } ) => {
+const Shop = ({ catalog, setCatalog, filteredCatalog, setFilteredCatalog, cart, setCart, cartTotal, setCartTotal, viewer, setViewer }) => {
     const [searchTerm, setSearchTerm] = useState('');
 
-    function howManyofThis(id) {
-        let hmot = cart.filter((cartItem) => cartItem.id === id);
-        return hmot.length;
-    }
+    const howManyofThis = (id) => {
+        return cart.filter((cartItem) => cartItem.id === id).length;
+    };
 
-    const onCheckout = data => {
-        console.log(View.CART);
-        setViewer(View.CART); // switch view to Summary
-    }
+    const onCheckout = () => {
+        setViewer(View.CART); // Switch view to Summary
+    };
 
-    useEffect(()=>{
+    useEffect(() => {
         const fetchData = async () => {
-            const someResponse = await fetch("./products.json");
-            const data = await someResponse.json();
-            // update State Variable
+            const response = await fetch("./products.json");
+            const data = await response.json();
             setCatalog(data);
             setFilteredCatalog(data);
-            console.log(data);
         };
         fetchData();
-    },[]);
+    }, []);
 
-    useEffect(()=>{
-        const total = () => {
-            let totalAmount = 0;
-            for (let i=0; i<cart.length; i++){
-                totalAmount += cart[i].price;
-            }
-            totalAmount = totalAmount.toFixed(2);
-            setCartTotal(totalAmount);
-            console.log(totalAmount);
-        };
-        total();
-    },[cart]);
+    useEffect(() => {
+        const totalAmount = cart.reduce((acc, item) => acc + item.price, 0).toFixed(2);
+        setCartTotal(totalAmount);
+    }, [cart]);
 
     const listItems = filteredCatalog.map((el) => (
-        <Container className='p-4' key={el.id}>
-            <Card >
-                <Card.Img className="card-img-top" src={el.image} alt="shop item" style={{ height: "300px", width:"auto", objectFit: 'contain' }} />
+        <Col md={4} key={el.id} className='mb-4'>
+            <Card>
+                <Card.Img variant="top" src={el.image} alt="shop item" style={{ height: "300px", objectFit: 'contain' }} />
                 <Card.Body className="d-flex flex-column">
-                    <Card.Title className="card-title">{el.title}</Card.Title>
-                    <Card.Text className="card-text">💲{el.price.toFixed(2)}</Card.Text>
-                    <Card.Text className="card-description">{el.description}</Card.Text>
-                    <Card.Footer className="mt-auto d-flex align-items-center">
-                        <InputGroup>
-                            <Button 
-                                variant="light" 
-                                onClick={() => removeFromCart(el)} 
-                                disabled={howManyofThis(el.id) === 0}
-                            >
-                                -
-                            </Button>
-                            <Form.Control 
-                                type="number" 
-                                value={howManyofThis(el.id)} 
-                                onChange={(e) => updateQuantity(el.id, e.target.value)} 
-                                className="mx-2" 
-                                style={{ width: "60px" }}
-                            />
-                            <Button 
-                                variant="light" 
-                                onClick={() => addToCart(el)}
-                            >
-                                +
-                            </Button>
-                        </InputGroup>
-                    </Card.Footer>
+                    <Card.Title>{el.title}</Card.Title>
+                    <Card.Text>💲{el.price.toFixed(2)}</Card.Text>
+                    <Card.Text>{el.description}</Card.Text>
+                    <InputGroup>
+                        <Button variant="outline-danger" onClick={() => removeFromCart(el)} disabled={howManyofThis(el.id) === 0}>-</Button>
+                        <Form.Control
+                            type="number"
+                            value={howManyofThis(el.id)}
+                            onChange={(e) => updateQuantity(el.id, e.target.value)}
+                            className="mx-2"
+                            style={{ width: "60px" }}
+                        />
+                        <Button variant="outline-success" onClick={() => addToCart(el)}>+</Button>
+                    </InputGroup>
                 </Card.Body>
             </Card>
-        </Container>
+        </Col>
     ));
 
     const addToCart = (el) => {
         setCart([...cart, el]);
     };
 
-    
     const removeFromCart = (el) => {
-        let itemFound = false;
-        const updatedCart = cart.filter((cartItem) => {
-            if (cartItem.id === el.id && !itemFound) {
-                itemFound = true;
-                return false;
+        const updatedCart = cart.map((cartItem) => {
+            if (cartItem.id === el.id) {
+                if (cartItem.quantity > 1) {
+                    // Decrease quantity by 1
+                    return { ...cartItem, quantity: cartItem.quantity - 1 };
+                } else {
+                    // If quantity is 1, remove the item from the cart
+                    return null;
+                }
             }
-            return true;
-        });
-        if (itemFound) {
-            setCart(updatedCart);
-        }
+            return cartItem;
+        }).filter(Boolean); // Remove null values
+    
+        setCart(updatedCart);
     };
 
     const updateQuantity = (id, quantity) => {
@@ -128,14 +105,6 @@ const Shop = ( { catalog, setCatalog, filteredCatalog, setFilteredCatalog, cart,
         }
     };
 
-    const cartItems = cart.map((el, index) => (
-        <div key={index}>
-            <img class="img-fluid" src={el.image} width={40} height="auto" alt="shop item"/>
-            {el.title}
-            ${el.price}
-        </div>
-    ));
-
     const handleSearch = () => {
         if (searchTerm) {
             const filtered = catalog.filter(item =>
@@ -143,71 +112,49 @@ const Shop = ( { catalog, setCatalog, filteredCatalog, setFilteredCatalog, cart,
             );
             setFilteredCatalog(filtered);
         } else {
-            setFilteredCatalog(catalog); 
+            setFilteredCatalog(catalog);
         }
     };
 
     const handleClear = () => {
-        setSearchTerm(''); 
-        setFilteredCatalog(catalog); 
+        setSearchTerm('');
+        setFilteredCatalog(catalog);
     };
-    
-    
+
     return (
-        <div>
-            STORE SE/ComS3190
-            <div class="card">
-                
-                <div style={{ display: 'flex', alignItems: 'center', width: '350px' }}>
-                    <input
+        <Container>
+            <h2 className="my-4 text-center"></h2>
+    
+            <div className="mb-4 d-flex align-items-center">
+                <InputGroup style={{ width: '300px' }}>
+                    <Form.Control
                         type="text"
                         placeholder="Search..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        style={{ flex: 1, marginRight: '8px' }}
                     />
-                    <Button onClick={handleSearch} style={{ marginLeft: '8px' }}>Search</Button>
-                    <Button onClick={handleClear} style={{ marginLeft: '8px' }}>Clear</Button>
-
-                </div>
-                    
-                    
-                <div>
-                    <Button onClick={onCheckout}>
-                            Checkout
-                            <i className="bi bi-cart" style={{ marginLeft: '8px' }}></i>
+                    <Button onClick={handleSearch}>
+                        Search
+                        <i className="bi bi-search" style={{ marginLeft: '8px' }}></i>
                     </Button>
-                </div>   
-                <div class="row">
-                    <div class="col-md-8 cart">
-                        <div class="title">
-                            <div class="row">
-                                <div class="col">
-                                    <h4>
-                                        <b>3190 Shopping Cart</b>
-                                    </h4>
-                                </div>
-                                <div class="col align-self-center text-right text-muted">
-                                    <h4>
-                                        <b>Products selected {cart.length}</b>
-                                    </h4>
-                                </div>
-                                <div class ="col align-self-center text-right text-muted">
-                                    <h4>
-                                        <b>Order total: ${cartTotal}</b>
-                                    </h4>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="card-container" style={{alignItems: "center"}}>
-                            {listItems}
-                        </div>
-                    </div>
+                    <Button onClick={handleClear}>Clear</Button>
+                </InputGroup>
+                
+                <div className="ml-3">
+                    <Button onClick={onCheckout} variant="primary" style={{marginLeft: '8px'}}>
+                        Checkout
+                        <i className="bi bi-cart" style={{ marginLeft: '8px' }}></i>
+                    </Button>
                 </div>
-            </div>
-        </div>
+            </div> 
+    
+            <Row>
+                {listItems}
+            </Row>
+    
+            
+        </Container>
     );
 }
-
 
 export default Shop;
