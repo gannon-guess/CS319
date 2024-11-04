@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import "bootstrap/dist/css/bootstrap.css";
 import { Container, Card, Col, Button, Row, InputGroup } from 'react-bootstrap';
 import View from "./View.js"
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import "./styles.css"
 
 // Gannon Guess
@@ -131,7 +132,10 @@ function Cart( { cart, cartTotal, userInfo, setUserInfo, view, setViewer } ) {
                         
                     </div>
                     <div className="mb-3">
-                        <button type="submit" className="btn btn-primary">Submit</button>
+                        <button type="submit" className="btn btn-primary">
+                            Submit
+                            <i className="bi bi-cart-check" style={{ marginLeft: '8px' }}></i>
+                        </button>
                     </div>
                 </form>
             </div>

@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Container, Card, Col, Button, InputGroup, Form } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.css";
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import './styles.css'
 
 import NavBar from "./NavBar.js";
 import View from "./View.js"
 
 const Shop = ( { catalog, setCatalog, filteredCatalog, setFilteredCatalog, cart, setCart, cartTotal, setCartTotal, viewer, setViewer } ) => {
-    // const [categories, setCategories] = useState([]);
-   
+    const [searchTerm, setSearchTerm] = useState('');
+
     function howManyofThis(id) {
         let hmot = cart.filter((cartItem) => cartItem.id === id);
         return hmot.length;
@@ -134,24 +135,49 @@ const Shop = ( { catalog, setCatalog, filteredCatalog, setFilteredCatalog, cart,
             ${el.price}
         </div>
     ));
+
+    const handleSearch = () => {
+        if (searchTerm) {
+            const filtered = catalog.filter(item =>
+                item.title.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            setFilteredCatalog(filtered);
+        } else {
+            setFilteredCatalog(catalog); 
+        }
+    };
+
+    const handleClear = () => {
+        setSearchTerm(''); 
+        setFilteredCatalog(catalog); 
+    };
     
     
     return (
         <div>
             STORE SE/ComS3190
             <div class="card">
-                <div style={{ width: '350px' }}>
-                    <NavBar
-                        catalog={catalog}
-                        setCatalog={setCatalog}
-                        filteredCatalog={filteredCatalog}
-                        setFilteredCatalog={setFilteredCatalog}
-                        // categories={categories}
+                
+                <div style={{ display: 'flex', alignItems: 'center', width: '350px' }}>
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{ flex: 1, marginRight: '8px' }}
                     />
+                    <Button onClick={handleSearch} style={{ marginLeft: '8px' }}>Search</Button>
+                    <Button onClick={handleClear} style={{ marginLeft: '8px' }}>Clear</Button>
+
                 </div>
+                    
+                    
                 <div>
-                    <Button onClick={onCheckout}>Checkout</Button>
-                </div>           
+                    <Button onClick={onCheckout}>
+                            Checkout
+                            <i className="bi bi-cart" style={{ marginLeft: '8px' }}></i>
+                    </Button>
+                </div>   
                 <div class="row">
                     <div class="col-md-8 cart">
                         <div class="title">
