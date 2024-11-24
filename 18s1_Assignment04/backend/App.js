@@ -23,13 +23,12 @@ const port = "8081";
 const host = "localhost";
 
 
-// SWITCH TO FALLSTUDENT
 // MySQL
 const mysql = require("mysql2");
 const db = mysql.createConnection({
     host: "127.0.0.1",
-    user: "fallstudent", //fallstudent
-    password: "fallstudent", //fallstudent
+    user: "fallstudent",
+    password: "fallstudent",
     database: "secoms3190",
 });
 
