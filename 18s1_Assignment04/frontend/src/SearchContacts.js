@@ -52,7 +52,7 @@ const SearchContact = ({contacts, setContacts }) => {
                                 <img
                                     src={`http://localhost:8081${contact.image_url}`}
                                     alt={contact.contact_name}
-                                    style={{ width: "50px", height: "50px", marginRight: "15px", objectFit: "cover" }}
+                                    style={{ width: "50px", height: "auto", marginRight: "15px", objectFit: "cover" }}
                                 />
                             )}
                             <div>

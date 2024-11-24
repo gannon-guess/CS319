@@ -89,7 +89,7 @@ const AddContact = () => {
                 <div className="mb-3">
                     <label className="form-label">Contact Image</label>
                     <input type="file" className="form-control" onChange={handleImageChange} />
-                    {preview && (<img src={preview} alt="Preview" className="mt-3" style={{ width: '100px', height: '100px', objectFit: 'cover' }} /> )}
+                    {preview && (<img src={preview} alt="Preview" className="mt-3" style={{ width: '100px', height: 'auto', objectFit: 'cover' }} /> )}
                 </div>
                 <button type="submit" className="btn btn-primary">
                 Add Contact
