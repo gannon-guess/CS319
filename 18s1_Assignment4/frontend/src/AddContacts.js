@@ -64,7 +64,6 @@ const AddContact = () => {
                 alert(successMessage);
             }
         } catch (err) {
-            console.log("ERRORRRRRR");
             alert("An error occurred :"+err)
         }
     };
