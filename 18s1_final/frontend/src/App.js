@@ -6,6 +6,7 @@ import Pokedex from "./Pokedex.js"
 
 function App() {
     const [teams, setTeams] = useState([]);
+    const [currentTeam, setCurrentTeam] = useState([]);
     const [pokedex, setPokedex] = useState([]);
 
     return (
