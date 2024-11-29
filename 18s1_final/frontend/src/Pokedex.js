@@ -65,24 +65,22 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
 
     // Function to handle adding a Pokémon to a selected team
     const handleAddToTeam = async (pokemon, teamId) => {
+
         // Find the team by teamId
+        console.log(teams);
         const selectedTeam = teams.find((team) => team.teamId === teamId);
 
         if (!selectedTeam) {
             alert("Team not found!");
             return;
         }
-        if(selectedTeam.pokemon.length >= 6){
-            alert("This team is already full!")
+        if (selectedTeam.pokemon.length >= 6) {
+            alert("This team is already full!");
             return;
         }
-        console.log("this:", selectedTeam);
+        console.log("selected:", selectedTeam);
 
-        // Create a new team object with the added Pokémon
-        // const updatedTeam = {
-        //     ...selectedTeam,
-        //     pokemon: [...selectedTeam.pokemon, pokemon] // Add the selected Pokémon to the team's existing pokemon array
-        // };
+        
         console.log("sending up:", pokemon);
 
 
@@ -99,15 +97,15 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
             if (!response.ok) {
                 throw new Error("Failed to update team");
             }
-            console.log()
+            
             const updatedTeamData = await response.json();
 
             // Update the frontend state to reflect the changes
-            // setTeams(prevTeams => 
-            //     prevTeams.map(team =>
-            //         team.teamId === teamId ? updatedTeamData : team
-            //     )
-            // );
+            setTeams(prevTeams => 
+                prevTeams.map(team =>
+                    team.teamId === teamId ? updatedTeamData : team
+                )
+            );
 
             alert(`${pokemon.name} added to team!`);
         } catch (error) {

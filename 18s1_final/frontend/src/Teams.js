@@ -59,10 +59,12 @@ const Teams = ({ teams, setTeams }) => {
             // Clear form and hide it
             setNewTeamName('');
             setShowCreateForm(false);
+            
         } catch (error) {
             alert("Error creating team: " + error);
         } finally {
             setLoading(false);
+            console.log(teams);
         }
     };
 

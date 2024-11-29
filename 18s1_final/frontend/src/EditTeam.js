@@ -5,8 +5,6 @@ const EditTeam = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [team, setTeam] = useState(null);
-    
-    // State variables for the form fields
     const [teamName, setTeamName] = useState('');
     const [pokemon, setPokemon] = useState([]);  // Array to hold pokemon data
 
@@ -39,15 +37,10 @@ const EditTeam = () => {
         setTeamName(e.target.value);
     };
 
-    // Handle input changes for pokemon names
-    const handlePokemonChange = (e, index) => {
-        const updatedPokemon = [...pokemon];
-        updatedPokemon[index] = { ...updatedPokemon[index], name: e.target.value };
-        setPokemon(updatedPokemon);
-    };
-
     // Handle removing a Pokémon from the team (UI and backend update)
-    const handleRemovePokemon = async (index) => {
+    const handleRemovePokemon = async (index, event) => {
+        event.preventDefault();  // Prevent form submission on "Remove Pokemon" button click
+        
         // Send DELETE request to backend
         try {
             const response = await fetch(`http://localhost:8081/teams/remove-pokemon/${id}`, {
@@ -66,6 +59,7 @@ const EditTeam = () => {
             const updatedPokemon = pokemon.filter((_, pokeIndex) => pokeIndex !== index);
             setPokemon(updatedPokemon);
 
+            // Show an alert to confirm the removal
             alert('Pokémon removed successfully!');
         } catch (error) {
             alert("There was an error removing the Pokémon: " + error);
@@ -167,17 +161,11 @@ const EditTeam = () => {
                             <div className="card-body">
                                 <h5 className="card-title">Pokemon {index + 1}</h5>
                                 <p className="card-text">
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        value={poke.name}
-                                        onChange={(e) => handlePokemonChange(e, index)}
-                                        placeholder={poke.name}
-                                    />
+                                    {poke.name} 
                                 </p>
                                 <button
                                     className="btn btn-danger"
-                                    onClick={() => handleRemovePokemon(index)}
+                                    onClick={(event) => handleRemovePokemon(index, event)}  // Pass the event object here
                                 >
                                     Remove Pokemon
                                 </button>
