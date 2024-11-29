@@ -13,7 +13,7 @@ const NavBar = () => {
                     <Link to="/teams" className="nav-link text-dark">My Teams</Link>
                 </li>
                 <li className="nav-item">
-                    <Link to="/pokedex" className="nav-link text-dark">Pokedex</Link>
+                    <Link to="/pokedex" className="nav-link text-dark">Pokédex</Link>
                 </li>
                 <li className="nav-item">
                     <Link to="/authors" className="nav-link text-dark">Authors</Link>

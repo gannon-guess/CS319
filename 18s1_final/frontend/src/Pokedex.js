@@ -9,9 +9,11 @@ function capitalizeFirstLetter(str) {
 function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
     const [filterName, setFilterName] = useState('');
 
-    const filteredPokedex = pokedex.filter(pokemon =>
-        pokemon.name.toLowerCase().includes(filterName.toLowerCase())
-    );
+    const filteredPokedex = pokedex.filter(pokemon => {
+        const nameMatch = pokemon.name.toLowerCase().includes(filterName.toLowerCase());
+        const idMatch = pokemon.id.toString().includes(filterName);
+        return nameMatch || idMatch;
+    });
 
     useEffect(() => {
         const fetchPokemonData = async (pokemon) => {
@@ -64,9 +66,8 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
                 alert("There was an Error loading pokemon " + error);
             }
         };
-
         fetchKantoPokemon();
-    }, [setPokedex]);
+    }, []);
 
     // Function to handle adding a Pokémon to a selected team
     const handleAddToTeam = async (pokemon, teamId) => {
@@ -126,7 +127,7 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
                 <input
                     type="text"
                     className="form-control"
-                    placeholder="Search Pokémon by name..."
+                    placeholder="Search Pokémon by name or Dex number"
                     value={filterName}
                     onChange={(e) => setFilterName(e.target.value)}
                 />
@@ -138,6 +139,7 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
                 {filteredPokedex.map((pokemon, index) => (
                     <div key={index} className="col-md-4 mb-4">
                         <div className="card">
+                            <h1 style={{marginLeft: "30px", marginTop: "10px"}}>{pokemon.id}</h1>
                             <img
                                 src={pokemon.sprites.other['official-artwork'].front_default}
                                 className="card-img-top"

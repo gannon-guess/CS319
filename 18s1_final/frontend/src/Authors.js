@@ -40,6 +40,8 @@ const Authors = () => {
         <div className="header-text">
           <h1>{authors.header.course}</h1>
           <h2>{authors.header.semester}</h2>
+          <h4>{authors.header.professor}</h4>
+          <h4>{authors.header.professorEmail}</h4>
           <h4>{authors.header.date}</h4>
           <p>{authors.header.description}</p>
         </div>

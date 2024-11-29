@@ -5,7 +5,9 @@
         "course": "CS319 Construction of User Interfaces",
         "semester": "Fall 2024",
         "date": "October 20, 2024",
-        "description": "Welcome to the Developers' page! We wanted to create a webpage that would allow access to some important early-morning information to help you plan for your day."
+        "professor": "Dr. Abraham N. Aldaco Gastelum",
+        "professorEmail": "aaldaco@iastate.edu",
+        "description": "Welcome to the Developers' page! We wanted to create a site for all of your Pokémon team building desires."
     },
     "authors": [
         {

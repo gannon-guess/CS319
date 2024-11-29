@@ -149,7 +149,7 @@ const EditTeam = () => {
                 </div>
 
                 {/* Pokémon Cards */}
-                <div className="pokemon-cards-container">
+                <div className="pokemon-cards-container ">
                     {pokemon.map((poke, index) => (
                         <div key={index} className="card" style={{ width: '18rem', margin: '10px', display: 'inline-block' }}>
                             <img
