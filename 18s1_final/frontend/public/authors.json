@@ -1,0 +1,24 @@
+{
+    "header": {
+        "image": "./images/developers.webp",
+        "title": "Developers",
+        "course": "CS319 Construction of User Interfaces",
+        "semester": "Fall 2024",
+        "date": "October 20, 2024",
+        "description": "Welcome to the Developers' page! We wanted to create a webpage that would allow access to some important early-morning information to help you plan for your day."
+    },
+    "authors": [
+        {
+            "name": "Gannon Guess",
+            "email": "gannon@iastate.edu",
+            "description": "Gannon is a Senior in Computer Science at Iowa State. He hopes to use the knowledge he gains from this web development course to create his own website.",
+            "image": "./images/gannon.jpg"
+        },
+        {
+            "name": "Boudhayan Chakraborty",
+            "email": "bcb43@iastate.edu",
+            "description": "Boudhayan is a Junior in Computer Science at Iowa State. He hopes to use the knowledge from this web development course to create a great portfolio.",
+            "image": "./images/Personal.jpg"
+        }
+    ]
+}

@@ -48,7 +48,7 @@ function Pokedex({pokedex, setPokedex}) {
 
     return(
         <div className="container">
-            {/* Filter bar at the top */}
+            {/* Filter Bar */}
             <div className="my-4">
                 <input
                     type="text"

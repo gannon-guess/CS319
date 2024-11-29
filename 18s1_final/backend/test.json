@@ -1,0 +1,18 @@
+[
+    {
+        "teamId": 1,
+        "teamName": "Fire Squad",
+        "pokemon": [
+            { "name": "Charizard", "types": ["fire", "flying"], "sprite": "path/to/charizard.jpg", "level": 36, "id": 6 },
+            { "name": "Arcanine", "types": ["fire"], "sprite": "path/to/arcanine.jpg", "level": 45, "id": 59 }
+        ]
+    },
+    {
+        "teamId": 2,
+        "teamName": "Water Squad",
+        "pokemon": [
+            { "name": "Squirtle", "types": ["fire", "flying"], "sprite": "path/to/charizard.jpg", "level": 36, "id": 6 },
+            { "name": "Blastoise", "types": ["fire"], "sprite": "path/to/arcanine.jpg", "level": 45, "id": 59 }
+        ]
+    }
+]
