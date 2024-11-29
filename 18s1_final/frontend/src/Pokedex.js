@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Button, Dropdown } from 'react-bootstrap'; // Import Bootstrap components
 
-function Pokedex({pokedex, setPokedex}) {
+function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
     const [filterName, setFilterName] = useState('');
 
     const filteredPokedex = pokedex.filter(pokemon =>
@@ -15,11 +16,29 @@ function Pokedex({pokedex, setPokedex}) {
                     throw new Error("Failed to fetch individual pokemon data");
                 }
                 const pokeData = await response.json();
-                return pokeData;
+
+                const pokemonSummary = {
+                    id: pokeData.id,
+                    name: pokeData.name,
+                    sprites: {
+                        other: {
+                            ['official-artwork']: {
+                                front_default: pokeData.sprites.other['official-artwork'].front_default
+                            }
+                        }  
+                    },
+                    types: pokeData.types.map(typeInfo => typeInfo.type.name),  // Get all types
+                    height: pokeData.height,
+                    weight: pokeData.weight
+                };
+                console.log(pokemonSummary)
+
+                return pokemonSummary;
             } catch (error) {
                 console.error("Error fetching pokemon data:", error);
             }
         }
+
         const fetchKantoPokemon = async () => {
             try {
                 const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151");
@@ -27,7 +46,7 @@ function Pokedex({pokedex, setPokedex}) {
                     throw new Error("Failed to fetch pokemon");
                 }
                 const data = await response.json();
-                
+
                 // Now fetch data for each individual Pokémon
                 const pokemonDataPromises = data.results.map(fetchPokemonData);
 
@@ -36,17 +55,64 @@ function Pokedex({pokedex, setPokedex}) {
 
                 // Set the fetched data into state
                 setPokedex(allPokemonData);
-                console.log(pokedex);
             } catch (error) {
                 alert("There was an Error loading pokemon " + error);
             }
         };
+
         fetchKantoPokemon();
-    }, []);
+    }, [setPokedex]);
 
-    
+    // Function to handle adding a Pokémon to a selected team
+    const handleAddToTeam = async (pokemon, teamId) => {
+        // Find the team by teamId
+        const selectedTeam = teams.find((team) => team.teamId === teamId);
 
-    return(
+        console.log("this:", selectedTeam);
+
+        if (!selectedTeam) {
+            alert("Team not found!");
+            return;
+        }
+
+        // Create a new team object with the added Pokémon
+        const updatedTeam = {
+            ...selectedTeam,
+            pokemon: [...selectedTeam.pokemon, pokemon] // Add the selected Pokémon to the team's existing pokemon array
+        };
+
+
+        // Send the updated team to the backend via a PUT request
+        try {
+            const response = await fetch(`http://localhost:8081/teams/${teamId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedTeam) // Send the updated team object
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update team");
+            }
+            console.log()
+            const updatedTeamData = await response.json();
+
+            // Update the frontend state to reflect the changes
+            setTeams(prevTeams => 
+                prevTeams.map(team =>
+                    team.teamId === teamId ? updatedTeamData : team
+                )
+            );
+
+            alert(`${pokemon.name} added to team!`);
+        } catch (error) {
+            console.error("Error adding Pokémon to team:", error);
+            alert("Failed to add Pokémon to the team.");
+        }
+    };
+
+    return (
         <div className="container">
             {/* Filter Bar */}
             <div className="my-4">
@@ -73,7 +139,7 @@ function Pokedex({pokedex, setPokedex}) {
                             <div className="card-body">
                                 <h5 className="card-title">{pokemon.name}</h5>
                                 <p className="card-text">
-                                    <strong>Type:</strong> {pokemon.types.map(type => type.type.name).join(", ")}
+                                    <strong>Type:</strong> {pokemon.types.join(", ")}
                                 </p>
                                 <p className="card-text">
                                     <strong>Height:</strong> {pokemon.height} decimeters
@@ -81,6 +147,24 @@ function Pokedex({pokedex, setPokedex}) {
                                 <p className="card-text">
                                     <strong>Weight:</strong> {pokemon.weight} hectograms
                                 </p>
+
+                                {/* Dropdown button to add to team */}
+                                <Dropdown>
+                                    <Dropdown.Toggle variant="primary" id={`dropdown-${pokemon.name}`}>
+                                        Add to Team
+                                    </Dropdown.Toggle>
+
+                                    <Dropdown.Menu>
+                                        {teams.map((team) => (
+                                            <Dropdown.Item
+                                                key={team.teamId}
+                                                onClick={() => handleAddToTeam(pokemon, team.teamId)}
+                                            >
+                                                {team.teamName}
+                                            </Dropdown.Item>
+                                        ))}
+                                    </Dropdown.Menu>
+                                </Dropdown>
                             </div>
                         </div>
                     </div>
