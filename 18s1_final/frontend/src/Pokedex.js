@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Dropdown } from 'react-bootstrap'; // Import Bootstrap components
 
+function capitalizeFirstLetter(str) {
+    if (!str) return str; // Handle empty strings
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
 function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
     const [filterName, setFilterName] = useState('');
 
@@ -19,7 +24,7 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
 
                 const pokemonSummary = {
                     id: pokeData.id,
-                    name: pokeData.name,
+                    name: capitalizeFirstLetter(pokeData.name),
                     sprites: {
                         other: {
                             ['official-artwork']: {
