@@ -94,21 +94,28 @@ app.get("/teams/:id", async (req, res) => {
 });
 
 // put a pokemon to a team
-app.put('/teams/:id', async (req, res) => {
+app.put('/teams/add/:id', async (req, res) => {
     const teamId = parseInt(req.params.id);
-    const { pokemon } = req.body; // The new Pokémon data
+    console.log("request:", req);
+    const pokemon  = req.body; // The new Pokémon data
     console.log("searching for: ", teamId);
     try {
         const team = await teamsCollection.findOne({ teamId });
-        console.log("found to update:", team)
+        console.log("adding:", pokemon)
+        console.log("old team:", team)
 
         if (team) {
             // Append the new Pokémon to the team's existing Pokémon array
-            const updatedTeam = {
-                ...team,
-                pokemon: [...team.pokemon, ...pokemon] // Add new Pokémon to the existing array
-            };
 
+            // const newPokemonTeam = [
+            //     ...pokemon,
+            //     ...team.pokemon
+            // ]
+            const updatedTeam = {
+                ...team, // Add new Pokémon to the existing array
+                pokemon: [...team.pokemon, pokemon]
+            };
+            console.log("new:", updatedTeam);
             // Update the team in the database
             await teamsCollection.updateOne({ teamId }, { $set: updatedTeam });
 
@@ -118,5 +125,92 @@ app.put('/teams/:id', async (req, res) => {
         }
     } catch (err) {
         res.status(500).json({ error: "Error updating team" });
+    }
+});
+
+// edit a pokemon team's names
+app.put('/teams/edit/:id', async (req, res) => {
+    const teamId = parseInt(req.params.id);  // The team ID from the URL
+    const { teamName } = req.body;  // The new team name from the request body
+
+    if (!teamName) {
+        return res.status(400).json({ error: "Team name is required" });
+    }
+
+    try {
+        // Log for debugging
+        console.log("Updating team with teamId:", teamId);
+        console.log("New team name:", teamName);
+
+        // Update the team name in the database based on the custom teamId
+        const result = await teamsCollection.updateOne(
+            { teamId: teamId },  // Find the team by its custom teamId
+            { $set: { teamName } } // Set the new team name
+        );
+
+        // Check if the team was found and updated
+        if (result.modifiedCount === 0) {
+            return res.status(404).json({ error: "Team not found or name is unchanged" });
+        }
+
+        // Fetch the updated team
+        const updatedTeam = await teamsCollection.findOne({ teamId: teamId });
+        res.status(200).json(updatedTeam); // Return the updated team
+
+    } catch (err) {
+        console.error("Error updating team:", err);
+        res.status(500).json({ error: "Error updating team" });
+    }
+});
+
+
+// delete a pokemon team
+app.delete('/teams/:id', async (req, res) => {
+    const teamId = parseInt(req.params.id);
+    try {
+        const result = await teamsCollection.deleteOne({ teamId });
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ error: "Team not found" });
+        }
+        res.status(200).json({ message: "Team deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to delete team" });
+    }
+});
+
+// Delete a Pokémon from a team's array by index
+app.delete('/teams/remove-pokemon/:teamId', async (req, res) => {
+    const { teamId } = req.params;  // The teamId from the URL
+    const { index } = req.body;  // The index of the Pokémon to remove
+    
+    if (index === undefined || index < 0) {
+        return res.status(400).json({ error: "Valid index is required" });
+    }
+
+    try {
+        const team = await teamsCollection.findOne({ teamId: parseInt(teamId) });
+
+        if (!team || !team.pokemon || team.pokemon.length <= index) {
+            return res.status(404).json({ error: "Team or Pokémon not found" });
+        }
+
+        // Remove the Pokémon at the given index
+        const updatedPokemonArray = [...team.pokemon];
+        updatedPokemonArray.splice(index, 1);
+
+        // Update the team with the new Pokémon array
+        const result = await teamsCollection.updateOne(
+            { teamId: parseInt(teamId) },
+            { $set: { pokemon: updatedPokemonArray } }
+        );
+
+        if (result.modifiedCount === 0) {
+            return res.status(404).json({ error: "Failed to update team" });
+        }
+
+        res.status(200).json({ message: "Pokemon removed successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Error removing Pokémon from team" });
     }
 });

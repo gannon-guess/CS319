@@ -31,7 +31,7 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
                     height: pokeData.height,
                     weight: pokeData.weight
                 };
-                console.log(pokemonSummary)
+                // console.log(pokemonSummary)
 
                 return pokemonSummary;
             } catch (error) {
@@ -68,28 +68,32 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
         // Find the team by teamId
         const selectedTeam = teams.find((team) => team.teamId === teamId);
 
-        console.log("this:", selectedTeam);
-
         if (!selectedTeam) {
             alert("Team not found!");
             return;
         }
+        if(selectedTeam.pokemon.length >= 6){
+            alert("This team is already full!")
+            return;
+        }
+        console.log("this:", selectedTeam);
 
         // Create a new team object with the added Pokémon
-        const updatedTeam = {
-            ...selectedTeam,
-            pokemon: [...selectedTeam.pokemon, pokemon] // Add the selected Pokémon to the team's existing pokemon array
-        };
+        // const updatedTeam = {
+        //     ...selectedTeam,
+        //     pokemon: [...selectedTeam.pokemon, pokemon] // Add the selected Pokémon to the team's existing pokemon array
+        // };
+        console.log("sending up:", pokemon);
 
 
         // Send the updated team to the backend via a PUT request
         try {
-            const response = await fetch(`http://localhost:8081/teams/${teamId}`, {
+            const response = await fetch(`http://localhost:8081/teams/add/${teamId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(updatedTeam) // Send the updated team object
+                body: JSON.stringify(pokemon) // Send the updated team object
             });
 
             if (!response.ok) {
@@ -99,11 +103,11 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
             const updatedTeamData = await response.json();
 
             // Update the frontend state to reflect the changes
-            setTeams(prevTeams => 
-                prevTeams.map(team =>
-                    team.teamId === teamId ? updatedTeamData : team
-                )
-            );
+            // setTeams(prevTeams => 
+            //     prevTeams.map(team =>
+            //         team.teamId === teamId ? updatedTeamData : team
+            //     )
+            // );
 
             alert(`${pokemon.name} added to team!`);
         } catch (error) {
