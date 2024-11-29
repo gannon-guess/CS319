@@ -156,7 +156,7 @@ const EditTeam = () => {
                                 src={poke.sprites.other['official-artwork'].front_default}  // Default placeholder if image is missing
                                 className="card-img-top"
                                 alt={poke.name}
-                                style={{ maxHeight: '200px', objectFit: 'cover' }}  // Style to fit the image nicely
+                                style={{ maxHeight: '200px', objectFit: 'contain' }}  // Style to fit the image nicely
                             />
                             <div className="card-body">
                                 <h5 className="card-title">Pokemon {index + 1}</h5>
