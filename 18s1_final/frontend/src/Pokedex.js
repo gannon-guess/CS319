@@ -66,7 +66,7 @@ function Pokedex({pokedex, setPokedex}) {
                     <div key={index} className="col-md-4 mb-4">
                         <div className="card">
                             <img
-                                src={pokemon.sprites.front_default}
+                                src={pokemon.sprites.other['official-artwork'].front_default}
                                 className="card-img-top"
                                 alt={pokemon.name}
                             />

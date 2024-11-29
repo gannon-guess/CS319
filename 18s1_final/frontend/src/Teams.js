@@ -12,11 +12,13 @@ const Teams = ({ teams, setTeams }) => {
                 const data = await response.json();
                 setTeams(data); 
             } catch (error) {
-                alert("There was an Error loading teams: " + error);
+                alert("There was an error loading teams: " + error);
             }
         };
         fetchTeams();
-    }, []);
+    }, [setTeams]); // Adding setTeams to the dependency array to avoid potential issues
+
+
 
     return (
         <div>
@@ -24,17 +26,33 @@ const Teams = ({ teams, setTeams }) => {
                 <h2 className="text-center mt-4">Teams List</h2>
                 <ul className="list-group">
                     {teams.map((team) => (
-                        <li key={team.teamId} className="list-group-item d-flex align-items-center">
-                            <div>
-                                <h5>{team.teamName}</h5>
-                                {/* Optional: Render Pokémon names */}
-                                <ul>
-                                    {team.pokemon.map((poke, index) => (
-                                        <li key={index}>
-                                            {poke.name} - Level {poke.level}
-                                        </li>
-                                    ))}
-                                </ul>
+                        <li key={team.teamId} className="card mb-5 p-3">
+                            <h5>{team.teamName}</h5>
+                            {/* TODO: edit button to link to edit page with currentTeam */}
+                            {/* <Button>
+                                <Link to="/team/edit/" className="nav-link text-dark">Pokedex</Link>
+                            </Button> */}
+                            
+                            {/* Pokemon Grid */}
+                            {/* TODO: onclick a pokemon, pull up its info/stats on an info page */}
+                            <div className="row">
+                                {/* Loop through the first 6 Pokémon of each team */}
+                                {team.pokemon.slice(0, 6).map((poke, index) => (
+                                    <div key={index} className="col-lg-4 col-md-6 mb-4">
+                                        <div className="card" style={{ width: "100%" }}>
+                                            <img
+                                                src={poke.sprites.other['official-artwork'].front_default}
+                                                className="card-img-top"
+                                                alt={poke.name}
+                                                style={{ height: '200px', width: "auto", objectFit: 'contain' }} // Ensure image covers the card area
+                                            />
+                                            <div className="card-body">
+                                                <h5 className="card-title">{poke.name}</h5>
+                                                <p className="card-text">Level {poke.level}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </li>
                     ))}
