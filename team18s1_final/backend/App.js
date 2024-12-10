@@ -27,8 +27,9 @@ const dbName = "secoms3190";
 const client = new MongoClient(url);
 const db = client.db(dbName);
 
-
+// Set the db collection location
 const teamsCollection = db.collection("pokemonTeams");
+// teamId's increment from 0
 let teamId = 0;
 
 
@@ -69,7 +70,6 @@ app.post('/teams', async (req, res) => {
     // Send the newly created team back to the client
     res.status(201).json(newTeam);
 });
-
 
 
 
@@ -118,6 +118,7 @@ app.put('/teams/add/:id', async (req, res) => {
         res.status(500).json({ error: "Error updating team" });
     }
 });
+
 
 // edit a pokemon team's names
 app.put('/teams/edit/:id', async (req, res) => {
