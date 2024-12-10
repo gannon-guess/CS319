@@ -1,3 +1,11 @@
+/**
+ * Gannon Guess
+ * gannon@iastate.edu
+ * Boudhayan Chakraborty
+ * bcb43@iastate.edu
+ * December 10, 2024
+*/
+
 var express = require("express");
 var cors = require("cors");
 var fs = require("fs");
@@ -22,26 +30,21 @@ const db = client.db(dbName);
 
 const teamsCollection = db.collection("pokemonTeams");
 let teamId = 0;
-// Set up multer for image upload
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         cb(null, "uploads/"); // Save images in the 'uploads' folder
-//     },
-//     filename: (req, file, cb) => {
-//         cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
-//     }
-// });
 
-// const upload = multer({ storage: storage });
 
-// Create "uploads" folder if it doesn't exist
-// const fs = require("fs");
-// if (!fs.existsSync("uploads")) {
-//     fs.mkdirSync("uploads");
-// }
-    
 app.listen(port, () => {
     console.log("App listening at http://%s:%s", host, port);
+});
+
+
+// get all teams
+app.get("/teams", async (req, res) => {
+    try {
+        const teams = await teamsCollection.find({}).toArray();
+        res.status(200).json(teams);
+    } catch (err) {
+        res.status(500).json({ error: "Error fetching teams" });
+    }
 });
 
 // create an empty team
@@ -68,15 +71,7 @@ app.post('/teams', async (req, res) => {
 });
 
 
-// get all teams
-app.get("/teams", async (req, res) => {
-    try {
-        const teams = await teamsCollection.find({}).toArray();
-        res.status(200).json(teams);
-    } catch (err) {
-        res.status(500).json({ error: "Error fetching teams" });
-    }
-});
+
 
 // get a team by id
 app.get("/teams/:id", async (req, res) => {
@@ -105,12 +100,7 @@ app.put('/teams/add/:id', async (req, res) => {
         console.log("old team:", team)
 
         if (team) {
-            // Append the new Pokémon to the team's existing Pokémon array
-
-            // const newPokemonTeam = [
-            //     ...pokemon,
-            //     ...team.pokemon
-            // ]
+            
             const updatedTeam = {
                 ...team, // Add new Pokémon to the existing array
                 pokemon: [...team.pokemon, pokemon]
@@ -120,6 +110,7 @@ app.put('/teams/add/:id', async (req, res) => {
             await teamsCollection.updateOne({ teamId }, { $set: updatedTeam });
 
             res.status(200).json(updatedTeam); // Send back the updated team
+
         } else {
             res.status(404).json({ error: "Team not found" });
         }
@@ -138,6 +129,7 @@ app.put('/teams/edit/:id', async (req, res) => {
     }
 
     try {
+
         // Log for debugging
         console.log("Updating team with teamId:", teamId);
         console.log("New team name:", teamName);

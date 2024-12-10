@@ -1,3 +1,11 @@
+/**
+ * Gannon Guess
+ * gannon@iastate.edu
+ * Boudhayan Chakraborty
+ * bcb43@iastate.edu
+ * December 10, 2024
+*/
+
 import React, { useState, useEffect } from 'react';
 import { Button, Dropdown } from 'react-bootstrap'; // Import Bootstrap components
 
