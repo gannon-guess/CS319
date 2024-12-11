@@ -14,13 +14,13 @@
             "name": "Gannon Guess",
             "email": "gannon@iastate.edu",
             "description": "Gannon is a Senior in Computer Science at Iowa State. He hopes to use the knowledge he gains from this web development course to create his own website.",
-            "image": "./images/gannon.jpg"
+            "image": "gannon.jpg"
         },
         {
             "name": "Boudhayan Chakraborty",
             "email": "bcb43@iastate.edu",
             "description": "Boudhayan is a Junior in Computer Science at Iowa State. He hopes to use the knowledge from this web development course to create a great portfolio.",
-            "image": "./images/Personal.jpg"
+            "image": "Personal.jpg"
         }
     ]
 }
