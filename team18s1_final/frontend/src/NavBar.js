@@ -3,8 +3,9 @@
  * gannon@iastate.edu
  * Boudhayan Chakraborty
  * bcb43@iastate.edu
- * December 10, 2024
+ * December 11, 2024
 */
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './styles/navBar.css'; // Import the CSS file

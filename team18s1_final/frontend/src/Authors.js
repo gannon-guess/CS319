@@ -3,7 +3,7 @@
  * gannon@iastate.edu
  * Boudhayan Chakraborty
  * bcb43@iastate.edu
- * December 10, 2024
+ * December 11, 2024
 */
 
 import React, { useState, useEffect } from 'react';
@@ -49,7 +49,7 @@ const Authors = () => {
         }
         return (
             <div className="header-image" id="header">
-                <img src={`http://localhost:8081/images/${authors.header.image}`} alt="Header Image" />
+                <img src={`http://localhost:8081/images/${authors.header.image}`} alt="Header" />
                 <div className="header-text">
                 <h1>{authors.header.course}</h1>
                 <h2>{authors.header.semester}</h2>

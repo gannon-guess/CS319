@@ -3,11 +3,11 @@
  * gannon@iastate.edu
  * Boudhayan Chakraborty
  * bcb43@iastate.edu
- * December 10, 2024
+ * December 11, 2024
 */
 
 import React, { useState, useEffect } from 'react';
-import { Button, Dropdown } from 'react-bootstrap'; // Import Bootstrap components
+import { Dropdown } from 'react-bootstrap'; // Import Bootstrap components
 import { typeColors } from './TypeColors.js';
 
 // function for capitalizing the first letter of a word
@@ -67,7 +67,7 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
                     name: capitalizeFirstLetter(pokeData.name),
                     sprites: {
                         other: {
-                            ['official-artwork']: {
+                            'official-artwork': {
                                 front_default: pokeData.sprites.other['official-artwork'].front_default
                             }
                         }  
@@ -109,7 +109,7 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
         };
         // fetch the kanto pokemon
         fetchKantoPokemon();
-    }, []);
+    }, [setPokedex, setTeams]);
 
     // function to handle adding a Pokémon to a selected team
     const handleAddToTeam = async (pokemon, teamId) => {

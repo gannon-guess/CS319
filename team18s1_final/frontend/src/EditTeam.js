@@ -3,7 +3,7 @@
  * gannon@iastate.edu
  * Boudhayan Chakraborty
  * bcb43@iastate.edu
- * December 10, 2024
+ * December 11, 2024
 */
 
 
@@ -140,7 +140,7 @@ const EditTeam = () => {
                 throw new Error('Failed to update team');
             }
 
-            const updatedData = await response.json();
+            // const updatedData = await response.json();
 
             // alert user that the team was updated
             alert("Team updated successfully!");

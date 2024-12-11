@@ -3,7 +3,7 @@
  * gannon@iastate.edu
  * Boudhayan Chakraborty
  * bcb43@iastate.edu
- * December 10, 2024
+ * December 11, 2024
 */
 
 import React, { useState, useEffect } from 'react';
@@ -22,7 +22,7 @@ const Teams = ({ teams, setTeams }) => {
     const [newTeamName, setNewTeamName] = useState('');
     // loading state of the page, mainly debugging
     const [loading, setLoading] = useState(false);
-    // search params
+    // search params, used for filtering the teams
     const [searchQuery, setSearchQuery] = useState('');
 
     // fetch all teams on start
@@ -208,6 +208,7 @@ const Teams = ({ teams, setTeams }) => {
                                                 backgroundColor: typeColors[poke.types[0].toLowerCase()] || "#ffffff", 
                                                 color: "white",
                                             }}>
+                                            {/* picture */}
                                             <img
                                                 src={poke.sprites.other['official-artwork'].front_default}
                                                 className="card-img-top"
@@ -219,9 +220,10 @@ const Teams = ({ teams, setTeams }) => {
                                                 }}
                                             />
                                             <div className="card-body">
-
+                                                {/* name */}
                                                 <h5 className="card-title">{poke.name}</h5>
-
+                                                
+                                                {/* types */}
                                                 <p>
                                                     <strong>Types: </strong> 
                                                     {poke.types?.map((type, typeIndex) => (
@@ -229,7 +231,7 @@ const Teams = ({ teams, setTeams }) => {
                                                     )) || 'N/A'}
                                                 </p>
 
-
+                                                {/* ability */}
                                                 <p>
                                                     <strong>Ability: </strong> 
                                                     {poke.abilities?.[0]?.ability?.name ? (
@@ -238,7 +240,7 @@ const Teams = ({ teams, setTeams }) => {
                                                 </p>
 
 
-
+                                                {/* moves */}
                                                 <p>
                                                     <strong>Moves: </strong> 
                                                     {poke.moves?.slice(0, 4).map((move, moveIndex) => (
