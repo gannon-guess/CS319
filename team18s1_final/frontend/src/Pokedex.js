@@ -7,7 +7,7 @@
 */
 
 import React, { useState, useEffect } from 'react';
-import { Dropdown } from 'react-bootstrap'; // Import Bootstrap components
+import { Accordion, Form, Dropdown, Row, Col, Button } from 'react-bootstrap'; // Import Bootstrap components
 import { typeColors } from './TypeColors.js';
 
 // function for capitalizing the first letter of a word
@@ -21,14 +21,21 @@ function capitalizeFirstLetter(str) {
 // at this time, this consits of only the Kanto pokemon
 // Pokemon can be filtered using the search bar at the top of the page
 function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
+    // name filter
     const [filterName, setFilterName] = useState('');
+    // type filter array
+    const [selectedTypes, setSelectedTypes] = useState([]);
 
-    // apply filters to the pokedex, for user filtering
+    // get unique types from the current pokedex
+    const uniqueTypes = [...new Set(pokedex.flatMap(pokemon => pokemon.types))];
+
+    // Apply filters to the pokedex, for user filtering
     const filteredPokedex = pokedex.filter(pokemon => {
         const nameMatch = pokemon.name.toLowerCase().includes(filterName.toLowerCase());
         const idMatch = pokemon.id.toString().includes(filterName);
-        const typeMatch = pokemon.types.some(type => type.toLowerCase().includes(filterName.toLowerCase()));
-        return nameMatch || idMatch || typeMatch;
+        const typeMatch = selectedTypes.length === 0 || pokemon.types.some(type => selectedTypes.includes(type));
+
+        return (nameMatch || idMatch) && typeMatch;
     });
 
     // on the first load, all of the pokemon must be obtained
@@ -165,6 +172,23 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
         }
     };
 
+    // update selected types when checkbox is toggled
+    const handleTypeChange = (type) => {
+        setSelectedTypes((prevSelectedTypes) => {
+            if (prevSelectedTypes.includes(type)) {
+                return prevSelectedTypes.filter((t) => t !== type);
+            } else {
+                return [...prevSelectedTypes, type];
+            }
+        });
+    };
+
+    // clear the established filters
+    const clearFilters = () => {
+        // setFilterName('');
+        setSelectedTypes([]);
+    };
+
     // has a filter, all of the pokemon, and the ability to add them to teams
     return (
         <div className="container">
@@ -173,10 +197,38 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
                 <input
                     type="text"
                     className="form-control"
-                    placeholder="Search Pokémon by Name, Number, or Type"
+                    placeholder="Search Pokémon by Name or Number"
                     value={filterName}
                     onChange={(e) => setFilterName(e.target.value)}
                 />
+            </div>
+
+            {/* Type filter accordion */}
+            <div className="my-4">
+                <Accordion defaultActiveKey="0">
+                    <Accordion.Item eventKey="0">
+                        <Accordion.Header>Filter by Type</Accordion.Header>
+                        <Accordion.Body>
+                            <Row className="g-2">
+                                {uniqueTypes.map((type) => (
+                                    <Col xs={6} md={4} lg={3} key={type}>
+                                        <Form.Check
+                                            type="checkbox"
+                                            id={`type-${type}`}
+                                            label={capitalizeFirstLetter(type)}
+                                            checked={selectedTypes.includes(type)}
+                                            onChange={() => handleTypeChange(type)}
+                                            className="mb-2"
+                                        />
+                                    </Col>
+                                ))}
+                            </Row>
+                            <Button variant="danger" onClick={clearFilters} className="mt-3">
+                                Clear Filters
+                            </Button>
+                        </Accordion.Body>
+                    </Accordion.Item>
+                </Accordion>
             </div>
 
             {/* start of Kanto Pokemon List */}
