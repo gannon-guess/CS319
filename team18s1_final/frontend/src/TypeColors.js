@@ -6,6 +6,8 @@
  * December 10, 2024
 */
 
+// Defines colors for pokemon display
+// to be imported by modules that need it
 export const typeColors = {
     fire: "#f87171", // red
     water: "#60a5fa", // blue

@@ -11,35 +11,44 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from 'react-router-dom';
 import { typeColors } from './TypeColors.js';
 
-const Teams = ({ teams, setTeams }) => {
-    const [showCreateForm, setShowCreateForm] = useState(false);
-    const [newTeamName, setNewTeamName] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');  // State to manage the search input
 
-    // Fetch teams on mount
+// Module for displaying all of the pokemon teams the user currently has
+// The user can search teams by name, or begin editing teams here
+// if a pokemon team is not full, the user has a link to the pokedex on that team
+const Teams = ({ teams, setTeams }) => {
+    // bool for whether or not to show the create team form
+    const [showCreateForm, setShowCreateForm] = useState(false);
+    // bool for new team name 
+    const [newTeamName, setNewTeamName] = useState('');
+    // loading state of the page, mainly debugging
+    const [loading, setLoading] = useState(false);
+    // search params
+    const [searchQuery, setSearchQuery] = useState('');
+
+    // fetch all teams on start
     useEffect(() => {
         const fetchTeams = async () => {
             try {
+                // use backend to get teams from DB
                 const response = await fetch("http://localhost:8081/teams");
                 if (!response.ok) {
                     throw new Error("Failed to fetch teams");
                 }
                 const data = await response.json();
 
-                // Sort teams: teams with Pokémon should come first
+                // sort teams: teams with Pokémon should come first
                 const sortedTeams = data.sort((a, b) => {
                     return b.pokemon.length - a.pokemon.length;
                 });
 
-                // Set the sorted teams to state
+                // set the sorted teams to state
                 setTeams(sortedTeams);
             } catch (error) {
                 alert("There was an error loading teams: " + error);
             }
         };
         fetchTeams();
-    }, [setTeams]);
+    }, [setTeams]); // if there are new teams, they need to be fetched
 
     // Handle form submission to create a new team
     const handleCreateTeam = async (e) => {
@@ -52,12 +61,14 @@ const Teams = ({ teams, setTeams }) => {
 
         setLoading(true);
 
+        // a new team has no pokemon
         const newTeam = {
             teamName: newTeamName,
-            pokemon: [], // Initialize with an empty array for pokemon
+            pokemon: [],
         };
 
         try {
+            // post the new, empty team
             const response = await fetch("http://localhost:8081/teams", {
                 method: 'POST',
                 headers: {
@@ -73,7 +84,7 @@ const Teams = ({ teams, setTeams }) => {
             const createdTeam = await response.json();
             setTeams((prevTeams) => [...prevTeams, createdTeam]);
 
-            // Clear form and hide it
+            // clear and hide form
             setNewTeamName('');
             setShowCreateForm(false);
 
@@ -84,13 +95,17 @@ const Teams = ({ teams, setTeams }) => {
         }
     };
 
-    // Filter teams based on search query
+    // filter teams based on search query
     const filteredTeams = teams.filter((team) => {
         return team.teamName.toLowerCase().includes(searchQuery.toLowerCase());
     });
 
+
     return (
         <div>
+            {/* header containing page information for the user
+                and a little about the project
+            */}
             <div className="bg-light py-4 mb-4 shadow-sm border-top border-primary">
                 <div className="container">
                     <div className="row justify-content-center">
@@ -106,7 +121,7 @@ const Teams = ({ teams, setTeams }) => {
             <div className="container">
                 <h2 className="text-center mt-4">Teams List</h2>
 
-                {/* Search Bar */}
+                {/* filter search bar */}
                 <div className="text-center mb-4">
                     <input
                         type="text"
@@ -118,7 +133,7 @@ const Teams = ({ teams, setTeams }) => {
                     />
                 </div>
 
-                {/* Button to trigger form */}
+                {/* button to trigger create team form */}
                 <div className="text-center mb-4">
                     <button
                         className="btn btn-success"
@@ -128,11 +143,12 @@ const Teams = ({ teams, setTeams }) => {
                     </button>
                 </div>
 
-                {/* Create New Team Form */}
+                {/* new team form */}
                 {showCreateForm && (
                     <div className="card mb-4 p-3">
                         <h4>Create New Team</h4>
                         <form onSubmit={handleCreateTeam}>
+                            {/* get new team name */}
                             <div className="mb-3">
                                 <label htmlFor="teamName" className="form-label">Team Name</label>
                                 <input
@@ -144,6 +160,7 @@ const Teams = ({ teams, setTeams }) => {
                                     placeholder="Enter team name"
                                 />
                             </div>
+                            {/* button for creating team */}
                             <div className="text-center">
                                 <button
                                     type="submit"
@@ -157,28 +174,31 @@ const Teams = ({ teams, setTeams }) => {
                     </div>
                 )}
 
-                {/* Teams List */}
+                {/* list of teams */}
                 <ul className="list-group">
+                    {/* map each team to a container */}
                     {filteredTeams.map((team) => (
                         <li key={team.teamId} className="card mb-5 p-3">
                             <div>
                                 <h5>
                                     {team.teamName}
                                 </h5>
-
+                                {/* if the team isnt full, have link to pokedex */}
                                 {team.pokemon.length < 6 && (
                                     <Link to={`/pokedex`} className="btn btn-primary mb-3">
                                         Add Pokemon
                                     </Link>
                                 )}
+                                {/* option to edit team */}
                                 <div>
                                     <Link to={`/team/edit/${team.teamId}`} className="btn btn-primary mb-3">
                                         Edit Team
                                     </Link>
                                 </div>
                             </div>
-
+                            
                             <div className="row">
+                                {/* map each pokemon in team to a card */}
                                 {team.pokemon.slice(0, 6).map((poke, index) => (
                                     <div key={index} className="col-lg-4 col-md-6 mb-4">
                                         <div

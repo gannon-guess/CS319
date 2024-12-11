@@ -1,16 +1,35 @@
+/**
+ * Gannon Guess
+ * gannon@iastate.edu
+ * Boudhayan Chakraborty
+ * bcb43@iastate.edu
+ * December 10, 2024
+*/
+
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import "./styles/editTeam.css";
 import { typeColors } from './TypeColors';
 
+/**
+ * Module for editing a pokemon team
+ * Pokemon can be removed from the team, or the team can be deleted
+ * The team name can be changed, or individual pokemon names can be changed
+*/
 const EditTeam = () => {
+    // mark id as a parameter to be used by calls to the backend
     const { id } = useParams();
     const navigate = useNavigate();
-    const [team, setTeam] = useState(null);
-    const [teamName, setTeamName] = useState('');
-    const [pokemon, setPokemon] = useState([]);  // Array to hold pokemon data
 
-    // Fetch the current team data when the component mounts
+    // stores team being edited
+    const [team, setTeam] = useState(null);
+    // stores name of team being edited
+    const [teamName, setTeamName] = useState('');
+    // Holds teams pokemon data in an array
+    const [pokemon, setPokemon] = useState([]);  
+
+    // Fetch the current team's data
     useEffect(() => {
         const fetchTeam = async () => {
             if (id) {
@@ -22,40 +41,39 @@ const EditTeam = () => {
                     const data = await response.json();
                     setTeam(data);
 
-                    // Initialize state variables with the fetched data
                     setTeamName(data.teamName);
-                    setPokemon(data.pokemon || []);  // Assuming pokemon is an array
+                    setPokemon(data.pokemon || []);
                 } catch (error) {
                     alert("Error fetching team: " + error);
                 }
             }
         };
         fetchTeam();
-    }, [id]);
+    }, [id]);  // every time the team id changes, the page must load that team
 
-    // Handle input changes for team name
+    // Set team name if it is changed
     const handleTeamNameChange = (e) => {
         setTeamName(e.target.value);
     };
 
-    // Handle input changes for Pokemon nickname
+    // set pokemon name if it is changed and update team to reflect the change
     const handlePokemonNameChange = (index) => (e) => {
         const updatedPokemon = [...pokemon];
-        updatedPokemon[index].name = e.target.value;  // Update the name of the pokemon with the provided index
+        updatedPokemon[index].name = e.target.value;
         setPokemon(updatedPokemon);
         console.log("new name", updatedPokemon);
     
-        // Ensure the team data is updated as well
+        // ensure the team data is updated as well
         const updatedTeam = { ...team };
-        updatedTeam.pokemon = updatedPokemon; // Update the team's pokemon list with the new data
-        setTeam(updatedTeam); // Update the state with the modified team
+        updatedTeam.pokemon = updatedPokemon;
+        setTeam(updatedTeam);
     };
 
-    // Handle removing a Pokémon from the team (UI and backend update)
+    // handle removing a Pokémon from the team
     const handleRemovePokemon = async (index, event) => {
-        event.preventDefault();  // Prevent form submission on "Remove Pokemon" button click
+        event.preventDefault();
         console.log("removing from:", team);
-        // Send DELETE request to backend
+        // send DELETE request to backend
         try {
             const response = await fetch(`http://localhost:8081/teams/remove-pokemon/${id}`, {
                 method: 'DELETE',
@@ -69,71 +87,79 @@ const EditTeam = () => {
                 throw new Error('Failed to remove Pokémon');
             }
 
-            // If successful, update the UI by removing the Pokémon from the state
+            // if the pokemon is removed, update the UI by filtering it out
             const updatedPokemon = pokemon.filter((_, pokeIndex) => pokeIndex !== index);
             setPokemon(updatedPokemon);
 
+            // update the team
             team.pokemon = updatedPokemon;
             setTeam(team);
 
-            console.log("team with removed: ", team);
-
-            // Show an alert to confirm the removal
+            // notify the user that the pokemon was removed
             alert('Pokémon removed successfully!');
         } catch (error) {
             alert("There was an error removing the Pokémon: " + error);
         }
     };
 
+    // return to teams page if the user requests to
     const onReturn = () => {
         navigate("/teams");
     };
 
     // Handle form submission (sending a PUT request)
-   const handleSubmit = async (e) => {
-    e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    // Check if the team data has changed
-    // if (teamName === team.teamName && JSON.stringify(pokemon) === JSON.stringify(team.pokemon)) {
-    //     navigate("/teams");
-    //     return;
-    // }
+        // old check for if the team was edited
+        // if not, saving couldnt happen. Changed so that save always occurs
+        // Check if the team data has changed
+        // if (teamName === team.teamName && JSON.stringify(pokemon) === JSON.stringify(team.pokemon)) {
+        //     navigate("/teams");
+        //     return;
+        // }
 
 
-    // Prepare the updated team data, including pokemon
-    const updatedTeam = {
-        teamName,
-        pokemon
+        // set the data to be updated in the team
+        const updatedTeam = {
+            teamName,
+            pokemon
+        };
+
+        try {
+            // send the PUT request with the updated team data
+            const response = await fetch(`http://localhost:8081/teams/edit/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedTeam)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update team');
+            }
+
+            const updatedData = await response.json();
+
+            // alert user that the team was updated
+            alert("Team updated successfully!");
+
+            // exit the editor
+            navigate('/teams');
+        } catch (error) {
+            alert("There was an error updating the team: " + error);
+        }
     };
 
-    try {
-        // Send the PUT request with the updated team data
-        const response = await fetch(`http://localhost:8081/teams/edit/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(updatedTeam)
-        });
 
-        if (!response.ok) {
-            throw new Error('Failed to update team');
-        }
-
-        const updatedData = await response.json();
-        alert("Team updated successfully!");
-        navigate('/teams');
-    } catch (error) {
-        alert("There was an error updating the team: " + error);
-    }
-};
-
-
-    // Handle team deletion (sending a DELETE request)
+    // handle deleting a team
     const handleDelete = async () => {
+        // get user confirmation that they want to delete the team
         const confirmDelete = window.confirm("Are you sure you want to delete this team?");
         if (!confirmDelete) return;
 
+        // send DELETE request to the backend to remove the team from the DB
         try {
             const response = await fetch(`http://localhost:8081/teams/${id}`, {
                 method: 'DELETE',
@@ -142,24 +168,35 @@ const EditTeam = () => {
             if (!response.ok) {
                 throw new Error("Failed to delete team");
             }
-
+            
+            // notify that the team was deleted
             alert("Team deleted successfully!");
+            // return to Team view page
             navigate('/teams');
         } catch (error) {
             alert("There was an error deleting the team: " + error);
         }
     };
 
+    // if the team cannot be loaded, show a loading screen
+    // mainly debugging
     if (!team) {
         return <p>Loading...</p>;
     }
 
+    // used to show all of the pokemon on the team
+    // The team name can be edited, along with an individual pokemon's name
+    // the team can also be deleted entirely, or individual pkmn removed
     return (
         <div className="container">
+            
+            {/* indicate the team being edited */}
+            <h2>Editing "{team.teamName}"</h2>
+            {/* Allow the user to leave the page */}
             <button onClick={onReturn} className="btn btn-primary">Return</button>
-            <h2>Editing {team.teamName}</h2>
+            {/* Create a form for saving changes to DB when submitted */}
             <form onSubmit={handleSubmit}>
-                {/* Team Name */}
+                {/* Change team name */}
                 <div className="mb-3">
                     <label className="form-label">Team Name</label>
                     <input
@@ -171,14 +208,15 @@ const EditTeam = () => {
                     />
                 </div>
 
-                {/* Pokémon Cards */}
+                {/* Pokemon display */}
                 <div className="pokemon-edit-cards-container">
                     {pokemon.map((poke, index) => {
-                        // Get the first type for background color (assuming typeColors is available)
+                        // get first type of pokemon for card background color
                         const primaryType = poke.types[0].toLowerCase();
                         const backgroundColor = typeColors[primaryType] || "#ffffff";  // Default to white if no color is found
-
+                        // display for the card itself
                         return (
+                            // card container
                             <div
                                 key={index}
                                 className="card"
@@ -188,6 +226,7 @@ const EditTeam = () => {
                                     backgroundColor: backgroundColor, // Dynamically set background color
                                     color: "white", // Ensure text is visible against darker backgrounds
                                 }}>
+                                {/* image of pkmn */}
                                 <img
                                     src={poke.sprites.other['official-artwork'].front_default} // Default placeholder if image is missing
                                     className="card-img-top"
@@ -196,7 +235,7 @@ const EditTeam = () => {
                                 />
                                 <div className="card-body">
                                     <h5 className="card-title">Pokemon {index + 1}</h5>
-                                    {/* Editable Pokemon Name (Nickname) */}
+                                    {/* editable pokemon name */}
                                     <div className="mb-3">
                                         <label className="form-label">Nickname</label>
                                         <input
@@ -207,26 +246,28 @@ const EditTeam = () => {
                                             placeholder={poke.name}
                                         />
                                     </div>
+                                    {/* display pokemon types */}
                                     <p>
                                         <strong>Types: </strong> 
                                         {poke.types?.map((type, typeIndex) => (
                                             <span key={typeIndex} className="badge bg-primary me-1">{type}</span>
                                         )) || 'N/A'}
                                     </p>
-
+                                    {/* display pokemon abilty */}
                                     <p>
                                         <strong>Ability: </strong> 
                                         {poke.abilities?.[0]?.ability?.name ? (
                                             <span className="badge bg-success me-1">{poke.abilities[0].ability.name}</span>
                                         ) : 'N/A'}
                                     </p>
-
+                                    {/* display pokemon moves */}
                                     <p>
                                         <strong>Moves: </strong> 
                                         {poke.moves?.slice(0, 4).map((move, moveIndex) => (
                                             <span key={moveIndex} className="badge bg-secondary me-1">{move}</span>
                                         )) || 'N/A'}
                                     </p>
+                                    {/* button to remove pokemon */}
                                     <button
                                         className="btn btn-danger"
                                         onClick={(event) => handleRemovePokemon(index, event)} // Pass the event object here
@@ -239,11 +280,11 @@ const EditTeam = () => {
                     })}
                 </div>
 
-                {/* Submit Button for Team */}
+                {/* submit button for saving */}
                 <button type="submit" className="btn btn-primary">Save Changes</button>
             </form>
 
-            {/* Delete Button */}
+            {/* delete team button */}
             <button onClick={handleDelete} className="btn btn-danger mt-3">
                 Delete Team
             </button>
