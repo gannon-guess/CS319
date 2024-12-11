@@ -124,10 +124,21 @@ const Teams = ({ teams, setTeams }) => {
                     {teams.map((team) => (
                         <li key={team.teamId} className="card mb-5 p-3">
                             <div>
-                                <h5>{team.teamName}</h5>
-                                <Link to={`/team/edit/${team.teamId}`} className="btn btn-primary mb-3">
-                                    Edit
-                                </Link>
+                                <h5>
+                                    {team.teamName}
+                                    
+                                </h5>
+
+                                {team.pokemon.length < 6 && (
+                                        <Link to={`/pokedex`} className="btn btn-primary mb-3">
+                                            Add Pokemon
+                                        </Link>
+                                )}
+                                <div>
+                                    <Link to={`/team/edit/${team.teamId}`} className="btn btn-primary mb-3">
+                                        Edit Team
+                                    </Link>
+                                </div>
                             </div>
                             
                             <div className="row">

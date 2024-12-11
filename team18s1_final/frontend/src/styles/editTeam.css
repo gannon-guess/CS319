@@ -1,0 +1,22 @@
+.pokemon-edit-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around; /* Optional: This centers the cards */
+}
+
+.edit-card {
+    width: 30%; /* Adjust width to fit 3 items per row */
+    margin: 10px; /* Space between cards */
+}
+
+@media (max-width: 768px) {
+    .edit-card {
+        width: 45%; /* On smaller screens, make cards 2 across */
+    }
+}
+
+@media (max-width: 480px) {
+    .edit-card {
+        width: 100%; /* On extra-small screens, stack the cards */
+    }
+}

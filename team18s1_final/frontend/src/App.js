@@ -47,7 +47,6 @@ function App() {
                 
                 <div className="flex-grow-1 p-3">
                     <Routes>
-                        {/* <Route path="/" element={<div>Welcome to the Pokemon Team app!</div>} /> */}
                         <Route path="/pokedex" element={<Pokedex
                                     pokedex={ pokedex }
                                     setPokedex={ setPokedex }

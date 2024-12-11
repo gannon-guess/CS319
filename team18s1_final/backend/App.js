@@ -57,18 +57,29 @@ app.post('/teams', async (req, res) => {
         return res.status(400).json({ error: 'Team name is required' });
     }
 
-    // Generate a new teamId (for example, using a random number or increment)
-    const newTeam = {
-        teamId,
-        teamName: teamName,
-        pokemon:[], // If no pokemon are passed, initialize as an empty array
-    };
-    teamId = teamId + 1;
+    try {
+        // Fetch the highest teamId from the database
+        const highestTeam = await teamsCollection.findOne({}, { sort: { teamId: -1 } });
 
-    const result = await teamsCollection.insertOne(newTeam);
+        // Set the new teamId based on the highest teamId + 1, or start from 0 if no teams exist
+        const newTeamId = highestTeam ? highestTeam.teamId + 1 : 0;
 
-    // Send the newly created team back to the client
-    res.status(201).json(newTeam);
+        // Create a new team
+        const newTeam = {
+            teamId: newTeamId,
+            teamName: teamName,
+            pokemon: [], // If no pokemon are passed, initialize as an empty array
+        };
+
+        // Insert the new team into the database
+        const result = await teamsCollection.insertOne(newTeam);
+
+        // Send the newly created team back to the client
+        res.status(201).json(newTeam);
+    } catch (err) {
+        console.error("Error creating new team:", err);
+        res.status(500).json({ error: 'Failed to create new team' });
+    }
 });
 
 
@@ -142,9 +153,9 @@ app.put('/teams/edit/:id', async (req, res) => {
         );
 
         // Check if the team was found and updated
-        if (result.modifiedCount === 0) {
-            return res.status(404).json({ error: "Team not found or name is unchanged" });
-        }
+        // if (result.modifiedCount === 0) {
+        //     return res.status(404).json({ error: "Team not found or name is unchanged" });
+        // }
 
         // Fetch the updated team
         const updatedTeam = await teamsCollection.findOne({ teamId: teamId });

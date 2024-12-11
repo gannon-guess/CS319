@@ -8,6 +8,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import "./styles/editTeam.css"
 
 const EditTeam = () => {
     const { id } = useParams();
@@ -15,6 +16,8 @@ const EditTeam = () => {
     const [team, setTeam] = useState(null);
     const [teamName, setTeamName] = useState('');
     const [pokemon, setPokemon] = useState([]);  // Array to hold pokemon data
+
+    
 
     // Fetch the current team data when the component mounts
     useEffect(() => {
@@ -27,7 +30,7 @@ const EditTeam = () => {
                     }
                     const data = await response.json();
                     setTeam(data);
-
+    
                     // Initialize state variables with the fetched data
                     setTeamName(data.teamName);
                     setPokemon(data.pokemon || []);  // Assuming pokemon is an array
@@ -36,7 +39,6 @@ const EditTeam = () => {
                 }
             }
         };
-
         fetchTeam();
     }, [id]);
 
@@ -48,7 +50,7 @@ const EditTeam = () => {
     // Handle removing a Pokémon from the team (UI and backend update)
     const handleRemovePokemon = async (index, event) => {
         event.preventDefault();  // Prevent form submission on "Remove Pokemon" button click
-        
+        console.log("removing from:", team);
         // Send DELETE request to backend
         try {
             const response = await fetch(`http://localhost:8081/teams/remove-pokemon/${id}`, {
@@ -58,15 +60,20 @@ const EditTeam = () => {
                 },
                 body: JSON.stringify({ index })  // Send the index to remove
             });
-
+    
             if (!response.ok) {
                 throw new Error('Failed to remove Pokémon');
             }
-
+    
             // If successful, update the UI by removing the Pokémon from the state
             const updatedPokemon = pokemon.filter((_, pokeIndex) => pokeIndex !== index);
             setPokemon(updatedPokemon);
 
+            team.pokemon = updatedPokemon;
+            setTeam(team);
+
+            console.log("team with removed: ", team);
+    
             // Show an alert to confirm the removal
             alert('Pokémon removed successfully!');
         } catch (error) {
@@ -157,23 +164,23 @@ const EditTeam = () => {
                 </div>
 
                 {/* Pokémon Cards */}
-                <div className="pokemon-cards-container ">
+                <div className="pokemon-edit-cards-container">
                     {pokemon.map((poke, index) => (
-                        <div key={index} className="card" style={{ width: '18rem', margin: '10px', display: 'inline-block' }}>
+                        <div key={index} className="card" style={ {width: '30%', margin: '10px'} }>
                             <img
-                                src={poke.sprites.other['official-artwork'].front_default}  // Default placeholder if image is missing
+                                src={poke.sprites.other['official-artwork'].front_default} // Default placeholder if image is missing
                                 className="card-img-top"
                                 alt={poke.name}
-                                style={{ maxHeight: '200px', objectFit: 'contain' }}  // Style to fit the image nicely
+                                style={{ maxHeight: '200px', objectFit: 'contain' }} // Style to fit the image nicely
                             />
                             <div className="card-body">
                                 <h5 className="card-title">Pokemon {index + 1}</h5>
                                 <p className="card-text">
-                                    {poke.name} 
+                                    {poke.name}
                                 </p>
                                 <button
                                     className="btn btn-danger"
-                                    onClick={(event) => handleRemovePokemon(index, event)}  // Pass the event object here
+                                    onClick={(event) => handleRemovePokemon(index, event)} // Pass the event object here
                                 >
                                     Remove Pokemon
                                 </button>
@@ -181,6 +188,7 @@ const EditTeam = () => {
                         </div>
                     ))}
                 </div>
+
 
                 {/* Submit Button */}
                 <button type="submit" className="btn btn-primary">Save Changes</button>

@@ -20,10 +20,27 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
     const filteredPokedex = pokedex.filter(pokemon => {
         const nameMatch = pokemon.name.toLowerCase().includes(filterName.toLowerCase());
         const idMatch = pokemon.id.toString().includes(filterName);
-        return nameMatch || idMatch;
+        const typeMatch = pokemon.types.some(type => type.toLowerCase().includes(filterName.toLowerCase()));
+        return nameMatch || idMatch || typeMatch;
     });
 
     useEffect(() => {
+        const fetchTeams = async () => {
+            try {
+                const response = await fetch("http://localhost:8081/teams");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch teams");
+                }
+                const data = await response.json();
+                setTeams(data);
+            } catch (error) {
+                console.error("Error fetching teams:", error);
+                alert("Failed to load teams");
+            }
+        };
+
+        fetchTeams();
+        
         const fetchPokemonData = async (pokemon) => {
             try {
                 const response = await fetch(pokemon.url);
@@ -46,7 +63,6 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
                     height: pokeData.height,
                     weight: pokeData.weight
                 };
-                // console.log(pokemonSummary)
 
                 return pokemonSummary;
             } catch (error) {
@@ -74,15 +90,19 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
                 alert("There was an Error loading pokemon " + error);
             }
         };
+
         fetchKantoPokemon();
     }, []);
 
     // Function to handle adding a Pokémon to a selected team
     const handleAddToTeam = async (pokemon, teamId) => {
 
+
         // Find the team by teamId
         console.log(teams);
         const selectedTeam = teams.find((team) => team.teamId === teamId);
+
+        console.log("team to add to", selectedTeam);
 
         if (!selectedTeam) {
             alert("Team not found!");
@@ -121,7 +141,7 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
                 )
             );
 
-            alert(`${pokemon.name} added to team!`);
+            alert(`${pokemon.name} added to team (${selectedTeam.pokemon.length + 1}/6)!`);
         } catch (error) {
             console.error("Error adding Pokémon to team:", error);
             alert("Failed to add Pokémon to the team.");
@@ -135,7 +155,7 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
                 <input
                     type="text"
                     className="form-control"
-                    placeholder="Search Pokémon by name or Dex number"
+                    placeholder="Search Pokémon by Name, Number, or Type"
                     value={filterName}
                     onChange={(e) => setFilterName(e.target.value)}
                 />
