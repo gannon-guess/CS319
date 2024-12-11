@@ -112,7 +112,7 @@ const Teams = ({ teams, setTeams }) => {
                         <div className="col-md-8 text-center">
                             <h4 className="text-primary">Welcome to the Pokémon Team Manager!</h4>
                             <p>
-                                Create, manage, and edit your Pokémon teams. Use the search bar below to quickly find teams you have created by name. The Pokedex page can be used to add Pokemon to your teams.
+                                Create, manage, and edit your Pokémon teams. Use the search bar below to quickly find teams you have created by name. The Pokédex page can be used to add Pokémon to your teams.
                             </p>
                         </div>
                     </div>
