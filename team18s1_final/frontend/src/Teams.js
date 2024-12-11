@@ -97,7 +97,7 @@ const Teams = ({ teams, setTeams }) => {
                         <div className="col-md-8 text-center">
                             <h4 className="text-primary">Welcome to the Pokémon Team Manager!</h4>
                             <p>
-                                Create, manage, and edit your Pokémon teams. Use the search bar below to quickly find teams you have created by name. The Pokedex page can be used to add Pokemon to your teams!
+                                Create, manage, and edit your Pokémon teams. Use the search bar below to quickly find teams you have created by name. The Pokedex page can be used to add Pokemon to your teams.
                             </p>
                         </div>
                     </div>
@@ -199,7 +199,32 @@ const Teams = ({ teams, setTeams }) => {
                                                 }}
                                             />
                                             <div className="card-body">
+
                                                 <h5 className="card-title">{poke.name}</h5>
+
+                                                <p>
+                                                    <strong>Types: </strong> 
+                                                    {poke.types?.map((type, typeIndex) => (
+                                                        <span key={typeIndex} className="badge bg-primary me-1">{type}</span>
+                                                    )) || 'N/A'}
+                                                </p>
+
+
+                                                <p>
+                                                    <strong>Ability: </strong> 
+                                                    {poke.abilities?.[0]?.ability?.name ? (
+                                                        <span className="badge bg-success me-1">{poke.abilities[0].ability.name}</span>
+                                                    ) : 'N/A'}
+                                                </p>
+
+
+
+                                                <p>
+                                                    <strong>Moves: </strong> 
+                                                    {poke.moves?.slice(0, 4).map((move, moveIndex) => (
+                                                        <span key={moveIndex} className="badge bg-secondary me-1">{move}</span>
+                                                    )) || 'N/A'}
+                                                </p>
                                             </div>
                                         </div>
                                     </div>

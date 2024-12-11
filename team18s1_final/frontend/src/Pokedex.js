@@ -62,7 +62,9 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
                     },
                     types: pokeData.types.map(typeInfo => typeInfo.type.name),  // Get all types
                     height: pokeData.height,
-                    weight: pokeData.weight
+                    weight: pokeData.weight,
+                    moves: pokeData.moves.slice(0, 4).map(move => move.move.name),
+                    abilities: pokeData.abilities
                 };
 
                 return pokemonSummary;

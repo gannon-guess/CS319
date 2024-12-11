@@ -134,38 +134,46 @@ app.put('/teams/add/:id', async (req, res) => {
 // edit a pokemon team's names
 app.put('/teams/edit/:id', async (req, res) => {
     const teamId = parseInt(req.params.id);  // The team ID from the URL
-    const { teamName } = req.body;  // The new team name from the request body
+    const { teamName, pokemon } = req.body;  // The new team name and updated pokemon array from the request body
 
-    if (!teamName) {
-        return res.status(400).json({ error: "Team name is required" });
+    if (!teamName || !pokemon) {
+        return res.status(400).json({ error: "Team name and Pokémon are required" });
     }
 
     try {
-
         // Log for debugging
         console.log("Updating team with teamId:", teamId);
         console.log("New team name:", teamName);
+        console.log("Updated Pokémon:", pokemon);
 
-        // Update the team name in the database based on the custom teamId
+
+        // Update both team name and pokemon array in the database
         const result = await teamsCollection.updateOne(
             { teamId: teamId },  // Find the team by its custom teamId
-            { $set: { teamName } } // Set the new team name
+            { 
+                $set: { 
+                    teamName,       // Set the new team name
+                    pokemon        // Set the new pokemon array (which includes updated nicknames)
+                } 
+            }
         );
-
-        // Check if the team was found and updated
-        // if (result.modifiedCount === 0) {
-        //     return res.status(404).json({ error: "Team not found or name is unchanged" });
-        // }
 
         // Fetch the updated team
         const updatedTeam = await teamsCollection.findOne({ teamId: teamId });
-        res.status(200).json(updatedTeam); // Return the updated team
+        
+        if (!updatedTeam) {
+            return res.status(404).json({ error: "Team not found" });
+        }
+
+        // Return the updated team
+        res.status(200).json(updatedTeam);
 
     } catch (err) {
         console.error("Error updating team:", err);
         res.status(500).json({ error: "Error updating team" });
     }
 });
+
 
 
 // delete a pokemon team
