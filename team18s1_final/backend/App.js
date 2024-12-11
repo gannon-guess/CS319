@@ -11,6 +11,7 @@ var cors = require("cors");
 var fs = require("fs");
 var bodyParser = require("body-parser");
 const { MongoClient } = require("mongodb");
+const path = require('path');
 
 var app = express();
 app.use(cors());
@@ -226,3 +227,10 @@ app.delete('/teams/remove-pokemon/:teamId', async (req, res) => {
         res.status(500).json({ error: "Error removing Pokémon from team" });
     }
 });
+
+// Serve static files from the "images" directory
+app.use('/images', express.static('images'));
+
+app.get('/authors.json', (req, res) => {
+    res.sendFile(path.join(__dirname, 'authors.json'));
+  });

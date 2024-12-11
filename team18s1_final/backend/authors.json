@@ -1,6 +1,6 @@
 {
     "header": {
-        "image": "./images/developers.webp",
+        "image": "developers.webp",
         "title": "Developers",
         "course": "CS319 Construction of User Interfaces",
         "semester": "Fall 2024",

@@ -216,22 +216,26 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
                                     </p>
 
                                     {/* Dropdown button to add to team */}
-                                    <Dropdown>
-                                        <Dropdown.Toggle variant="primary" id={`dropdown-${pokemon.name}`} size="sm">
-                                            Add to Team
-                                        </Dropdown.Toggle>
+                                    {teams.length > 0 &&
+                                        <Dropdown>
+                                            <Dropdown.Toggle variant="primary" id={`dropdown-${pokemon.name}`} size="sm">
+                                                Add to Team
+                                            </Dropdown.Toggle>
 
-                                        <Dropdown.Menu>
-                                            {teams.map((team) => (
-                                                <Dropdown.Item
-                                                    key={team.teamId}
-                                                    onClick={() => handleAddToTeam(pokemon, team.teamId)}
-                                                >
-                                                    {team.teamName + "  (" + team.pokemon.length + "/6)"}
-                                                </Dropdown.Item>
-                                            ))}
-                                        </Dropdown.Menu>
-                                    </Dropdown>
+                                            <Dropdown.Menu>
+                                                {teams.map((team) => (
+                                                    <Dropdown.Item
+                                                        key={team.teamId}
+                                                        onClick={() => handleAddToTeam(pokemon, team.teamId)}
+                                                    >
+                                                        {team.teamName + "  (" + team.pokemon.length + "/6)"}
+                                                    </Dropdown.Item>
+                                                ))}
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                    
+                                    }
+                                    
                                 </div>
                             </div>
                         </div>

@@ -1,11 +1,3 @@
-/**
- * Gannon Guess
- * gannon@iastate.edu
- * Boudhayan Chakraborty
- * bcb43@iastate.edu
- * December 10, 2024
-*/
-
 import React, { useState, useEffect } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -18,7 +10,7 @@ const Authors = () => {
   useEffect(() => {
     const fetchAuthors = async () => {
       try {
-        const response = await fetch("/authors.json"); // Fetching the authors.json file
+        const response = await fetch("http://localhost:8081/authors.json"); // Fetching authors.json from the backend
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -44,7 +36,7 @@ const Authors = () => {
 
     return (
       <div className="header-image" id="header">
-        <img src={authors.header.image} alt="Header Image" />
+        <img src={`http://localhost:8081/images/${authors.header.image}`} alt="Header Image" />
         <div className="header-text">
           <h1>{authors.header.course}</h1>
           <h2>{authors.header.semester}</h2>
@@ -58,25 +50,25 @@ const Authors = () => {
   };
 
   return (
-      <div>
-        {loadHeader()}
-  
-        {/* Bootstrap grid system for author display */}
-        <div className="container marketing" style={{ marginTop: "80px" }}>
-          <div className="row justify-content-center">
-            {authors.authors.map((author, index) => (
-              <div key={index} className="col-lg-4 col-md-6 text-center author-box">
-                <div className="circle-image">
-                  <img src={author.image} alt={author.name} className="img-fluid" />
-                </div>
-                <h2 className="fw-normal">{author.name}</h2>
-                <p><a href={`mailto:${author.email}`}>{author.email}</a></p>
-                <p>{author.description}</p>
+    <div>
+      {loadHeader()}
+
+      {/* Bootstrap grid system for author display */}
+      <div className="container marketing" style={{ marginTop: "80px" }}>
+        <div className="row justify-content-center">
+          {authors.authors.map((author, index) => (
+            <div key={index} className="col-lg-4 col-md-6 text-center author-box">
+              <div className="circle-image">
+                <img src={`http://localhost:8081/images/${author.image}`} alt={author.name} className="img-fluid" />
               </div>
-            ))}
-          </div>
+              <h2 className="fw-normal">{author.name}</h2>
+              <p><a href={`mailto:${author.email}`}>{author.email}</a></p>
+              <p>{author.description}</p>
+            </div>
+          ))}
         </div>
       </div>
+    </div>
   );
 };
 
