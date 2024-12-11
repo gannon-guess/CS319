@@ -9,6 +9,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import "./styles/editTeam.css"
+import { typeColors } from './TypeColors';
 
 const EditTeam = () => {
     const { id } = useParams();
@@ -165,30 +166,43 @@ const EditTeam = () => {
 
                 {/* Pokémon Cards */}
                 <div className="pokemon-edit-cards-container">
-                    {pokemon.map((poke, index) => (
-                        <div key={index} className="card" style={ {width: '30%', margin: '10px'} }>
-                            <img
-                                src={poke.sprites.other['official-artwork'].front_default} // Default placeholder if image is missing
-                                className="card-img-top"
-                                alt={poke.name}
-                                style={{ maxHeight: '200px', objectFit: 'contain' }} // Style to fit the image nicely
-                            />
-                            <div className="card-body">
-                                <h5 className="card-title">Pokemon {index + 1}</h5>
-                                <p className="card-text">
-                                    {poke.name}
-                                </p>
-                                <button
-                                    className="btn btn-danger"
-                                    onClick={(event) => handleRemovePokemon(index, event)} // Pass the event object here
-                                >
-                                    Remove Pokemon
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                    {pokemon.map((poke, index) => {
+                        // Get the first type for background color (assuming typeColors is available)
+                        const primaryType = poke.types[0].toLowerCase();
+                        const backgroundColor = typeColors[primaryType] || "#ffffff";  // Default to white if no color is found
 
+                        return (
+                            <div
+                                key={index}
+                                className="card"
+                                style={{
+                                    width: '30%',
+                                    margin: '10px',
+                                    backgroundColor: backgroundColor, // Dynamically set background color
+                                    color: "white", // Ensure text is visible against darker backgrounds
+                                }}>
+                                <img
+                                    src={poke.sprites.other['official-artwork'].front_default} // Default placeholder if image is missing
+                                    className="card-img-top"
+                                    alt={poke.name}
+                                    style={{ maxHeight: '200px', objectFit: 'contain' }} // Style to fit the image nicely
+                                />
+                                <div className="card-body">
+                                    <h5 className="card-title">Pokemon {index + 1}</h5>
+                                    <p className="card-text">
+                                        {poke.name}
+                                    </p>
+                                    <button
+                                        className="btn btn-danger"
+                                        onClick={(event) => handleRemovePokemon(index, event)} // Pass the event object here
+                                    >
+                                        Remove Pokemon
+                                    </button>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
 
                 {/* Submit Button */}
                 <button type="submit" className="btn btn-primary">Save Changes</button>

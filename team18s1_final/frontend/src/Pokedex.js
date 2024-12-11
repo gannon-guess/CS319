@@ -8,6 +8,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button, Dropdown } from 'react-bootstrap'; // Import Bootstrap components
+import { typeColors } from './TypeColors.js';
 
 function capitalizeFirstLetter(str) {
     if (!str) return str; // Handle empty strings
@@ -72,7 +73,7 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
 
         const fetchKantoPokemon = async () => {
             try {
-                const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151");
+                const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151&offset=0");
                 if (!response.ok) {
                     throw new Error("Failed to fetch pokemon");
                 }
@@ -161,52 +162,82 @@ function Pokedex({ pokedex, setPokedex, teams, setTeams }) {
                 />
             </div>
 
+            {/* start of Kanto Pokemon List */}
             <h1 className="text-center my-5">Kanto Pokémon</h1>
 
-            <div className="row">
-                {filteredPokedex.map((pokemon, index) => (
-                    <div key={index} className="col-md-4 mb-4">
-                        <div className="card">
-                            <h1 style={{marginLeft: "30px", marginTop: "10px"}}>{pokemon.id}</h1>
-                            <img
-                                src={pokemon.sprites.other['official-artwork'].front_default}
-                                className="card-img-top"
-                                alt={pokemon.name}
-                            />
-                            <div className="card-body">
-                                <h5 className="card-title">{pokemon.name}</h5>
-                                <p className="card-text">
-                                    <strong>Type:</strong> {pokemon.types.join(", ")}
-                                </p>
-                                <p className="card-text">
-                                    <strong>Height:</strong> {pokemon.height} decimeters
-                                </p>
-                                <p className="card-text">
-                                    <strong>Weight:</strong> {pokemon.weight} hectograms
-                                </p>
+            <div className="container">
+    
 
-                                {/* Dropdown button to add to team */}
-                                <Dropdown>
-                                    <Dropdown.Toggle variant="primary" id={`dropdown-${pokemon.name}`}>
-                                        Add to Team
-                                    </Dropdown.Toggle>
+    
 
-                                    <Dropdown.Menu>
-                                        {teams.map((team) => (
-                                            <Dropdown.Item
-                                                key={team.teamId}
-                                                onClick={() => handleAddToTeam(pokemon, team.teamId)}
-                                            >
-                                                {team.teamName}
-                                            </Dropdown.Item>
-                                        ))}
-                                    </Dropdown.Menu>
-                                </Dropdown>
+            <div className="container">
+                <div className="row">
+                    {filteredPokedex.map((pokemon, index) => (
+                        <div key={index} className="col-6 col-md-4 col-lg-3 mb-4">
+                            {/* Dynamically set background color based on the first type */}
+                            <div 
+                                className="card" 
+                                style={{
+                                    backgroundColor: typeColors[pokemon.types[0].toLowerCase()] || "#ffffff",
+                                    color: "white", // You may want to adjust text color for contrast
+                                    minHeight: "350px", // Keep the card height consistent
+                                }}
+                            >
+                                {/* Reduce the size of the Pokémon ID */}
+                                <h1 className="mx-3 mt-2" style={{ fontSize: "1.5rem" }}>
+                                    {pokemon.id}
+                                </h1>
+
+                                <img
+                                    src={pokemon.sprites.other['official-artwork'].front_default}
+                                    className="card-img-top"
+                                    alt={pokemon.name}
+                                    style={{
+                                        height: '150px', // Set a fixed height for the image
+                                        width: 'auto',   // Ensure it scales proportionally
+                                        objectFit: 'contain', // Keep the image inside the card without stretching
+                                    }}
+                                />
+
+                                <div className="card-body p-2">
+                                    <h5 className="card-title" style={{ fontSize: "1.1rem" }}>
+                                        {pokemon.name}
+                                    </h5>
+                                    <p className="card-text" style={{ fontSize: "0.85rem" }}>
+                                        <strong>Type:</strong> {pokemon.types.join(", ")}
+                                    </p>
+                                    <p className="card-text" style={{ fontSize: "0.85rem" }}>
+                                        <strong>Height:</strong> {pokemon.height} decimeters
+                                    </p>
+                                    <p className="card-text" style={{ fontSize: "0.85rem" }}>
+                                        <strong>Weight:</strong> {pokemon.weight} hectograms
+                                    </p>
+
+                                    {/* Dropdown button to add to team */}
+                                    <Dropdown>
+                                        <Dropdown.Toggle variant="primary" id={`dropdown-${pokemon.name}`} size="sm">
+                                            Add to Team
+                                        </Dropdown.Toggle>
+
+                                        <Dropdown.Menu>
+                                            {teams.map((team) => (
+                                                <Dropdown.Item
+                                                    key={team.teamId}
+                                                    onClick={() => handleAddToTeam(pokemon, team.teamId)}
+                                                >
+                                                    {team.teamName + "  (" + team.pokemon.length + "/6)"}
+                                                </Dropdown.Item>
+                                            ))}
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
+        </div>
+
         </div>
     );
 }

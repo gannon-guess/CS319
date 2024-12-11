@@ -9,11 +9,13 @@
 import React, { useState, useEffect } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from 'react-router-dom';
+import { typeColors } from './TypeColors.js';
 
 const Teams = ({ teams, setTeams }) => {
-    const [showCreateForm, setShowCreateForm] = useState(false); // State to toggle form visibility
-    const [newTeamName, setNewTeamName] = useState(''); // Team name input state
-    const [loading, setLoading] = useState(false); // Loading state to manage POST request state
+    const [showCreateForm, setShowCreateForm] = useState(false);
+    const [newTeamName, setNewTeamName] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');  // State to manage the search input
 
     // Fetch teams on mount
     useEffect(() => {
@@ -24,7 +26,14 @@ const Teams = ({ teams, setTeams }) => {
                     throw new Error("Failed to fetch teams");
                 }
                 const data = await response.json();
-                setTeams(data);
+
+                // Sort teams: teams with Pokémon should come first
+                const sortedTeams = data.sort((a, b) => {
+                    return b.pokemon.length - a.pokemon.length;
+                });
+
+                // Set the sorted teams to state
+                setTeams(sortedTeams);
             } catch (error) {
                 alert("There was an error loading teams: " + error);
             }
@@ -62,24 +71,52 @@ const Teams = ({ teams, setTeams }) => {
             }
 
             const createdTeam = await response.json();
-            setTeams((prevTeams) => [...prevTeams, createdTeam]); // Add new team to state
+            setTeams((prevTeams) => [...prevTeams, createdTeam]);
 
             // Clear form and hide it
             setNewTeamName('');
             setShowCreateForm(false);
-            
+
         } catch (error) {
             alert("Error creating team: " + error);
         } finally {
             setLoading(false);
-            console.log(teams);
         }
     };
 
+    // Filter teams based on search query
+    const filteredTeams = teams.filter((team) => {
+        return team.teamName.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+
     return (
         <div>
+            <div className="bg-light py-4 mb-4 shadow-sm border-top border-primary">
+                <div className="container">
+                    <div className="row justify-content-center">
+                        <div className="col-md-8 text-center">
+                            <h4 className="text-primary">Welcome to the Pokémon Team Manager!</h4>
+                            <p>
+                                Create, manage, and edit your Pokémon teams. Use the search bar below to quickly find teams you have created by name. The Pokedex page can be used to add Pokemon to your teams!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div className="container">
                 <h2 className="text-center mt-4">Teams List</h2>
+
+                {/* Search Bar */}
+                <div className="text-center mb-4">
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Search teams by name..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)} // Update search query on input change
+                        style={{ width: '300px', margin: '0 auto' }}
+                    />
+                </div>
 
                 {/* Button to trigger form */}
                 <div className="text-center mb-4">
@@ -120,19 +157,19 @@ const Teams = ({ teams, setTeams }) => {
                     </div>
                 )}
 
+                {/* Teams List */}
                 <ul className="list-group">
-                    {teams.map((team) => (
+                    {filteredTeams.map((team) => (
                         <li key={team.teamId} className="card mb-5 p-3">
                             <div>
                                 <h5>
                                     {team.teamName}
-                                    
                                 </h5>
 
                                 {team.pokemon.length < 6 && (
-                                        <Link to={`/pokedex`} className="btn btn-primary mb-3">
-                                            Add Pokemon
-                                        </Link>
+                                    <Link to={`/pokedex`} className="btn btn-primary mb-3">
+                                        Add Pokemon
+                                    </Link>
                                 )}
                                 <div>
                                     <Link to={`/team/edit/${team.teamId}`} className="btn btn-primary mb-3">
@@ -140,16 +177,26 @@ const Teams = ({ teams, setTeams }) => {
                                     </Link>
                                 </div>
                             </div>
-                            
+
                             <div className="row">
                                 {team.pokemon.slice(0, 6).map((poke, index) => (
                                     <div key={index} className="col-lg-4 col-md-6 mb-4">
-                                        <div className="card" style={{ width: "100%" }}>
+                                        <div
+                                            className="card"
+                                            style={{
+                                                width: "100%",
+                                                backgroundColor: typeColors[poke.types[0].toLowerCase()] || "#ffffff", 
+                                                color: "white",
+                                            }}>
                                             <img
                                                 src={poke.sprites.other['official-artwork'].front_default}
                                                 className="card-img-top"
                                                 alt={poke.name}
-                                                style={{ height: '200px', width: "auto", objectFit: 'contain' }} 
+                                                style={{
+                                                    height: '200px',
+                                                    width: 'auto',
+                                                    objectFit: 'contain',
+                                                }}
                                             />
                                             <div className="card-body">
                                                 <h5 className="card-title">{poke.name}</h5>
