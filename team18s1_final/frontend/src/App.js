@@ -70,6 +70,13 @@ function App() {
                                 />
                             }
                         />
+                        <Route path="/" element={
+                                <Teams
+                                    teams={teams}
+                                    setTeams={setTeams}
+                                />
+                            }
+                        />
                         {/* Author page that displays the creators of this app */}
                         <Route path="/authors" element={
                                 <Authors/>
